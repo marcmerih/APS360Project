@@ -74,14 +74,14 @@ class BaseModel(nn.Module):
 
 
 def get_accuracy(model,set_, batch_size):
-    
+    batch_size=150
     label_ = [0]*(300)
     for i in range(0,300,2):
         label_[i] = 1
     
     label = torch.tensor(label_)
     
-    trainSet_,valSet_ = get_data_loader(150)
+    trainSet_,valSet_,__ = get_data_loader(batch_size)
     if set_ == "train":
         data_ = trainSet_
     elif set_ == "val":
@@ -90,8 +90,9 @@ def get_accuracy(model,set_, batch_size):
     
     correct = 0
     total = 0
-    for img, batch, in data_:
-        if(len(batch)==batch_size):
+    for img,batch in data_:
+        if(len(batch)==batch_size): 
+                
             b = torch.split(img,600,dim=3) 
             img = torch.cat(b, 0)
 
