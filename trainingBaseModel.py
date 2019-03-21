@@ -4,7 +4,7 @@ Created on Tue Mar 12 13:04:14 2019
 
 @author: chris
 """
-import definitions as d
+import definitions_v2 as d
 import matplotlib.pyplot as plt
 import numpy as np
 import pickle
