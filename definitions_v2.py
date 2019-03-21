@@ -75,8 +75,8 @@ class BaseModel(nn.Module):
 
 def get_accuracy(model,set_, batch_size):
     batch_size=64
-    label_ = [0]*(300)
-    for i in range(0,300,2):
+    label_ = [0]*(batch_size*2)
+    for i in range(0,batch_size*2,2):
         label_[i] = 1
     
     label = torch.tensor(label_).cuda()
