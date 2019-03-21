@@ -109,7 +109,7 @@ def get_accuracy(model,set_, batch_size):
         
 
 
-def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.001):
+def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
     mdl.cuda()
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(mdl.parameters(), lr=learning_rate, momentum=0.9)
