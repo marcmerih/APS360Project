@@ -79,7 +79,7 @@ def get_accuracy(model,set_, batch_size):
     for i in range(0,300,2):
         label_[i] = 1
     
-    label = torch.tensor(label_)
+    label = torch.tensor(label_).cuda()
     
     trainSet_,valSet_ = get_data_loader(batch_size)
     if set_ == "train":
@@ -91,13 +91,15 @@ def get_accuracy(model,set_, batch_size):
     correct = 0
     total = 0
     for img,batch in data_:
+        img,batch=img.cuda(),batch.cuda()
         if(len(batch)==batch_size): 
                 
             b = torch.split(img,600,dim=3) 
             img = torch.cat(b, 0)
 
 
-            output = model(img) 
+            output = model(img).cuda()
+      
             pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
             correct += pred.eq(label.view_as(pred)).sum().item() #compute how many predictions were correct
             total += img.shape[0] #get the total ammount of predictions
@@ -108,6 +110,7 @@ def get_accuracy(model,set_, batch_size):
 
 
 def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
+    mdl.cuda()
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(mdl.parameters(), lr=learning_rate, momentum=0.9)
     trainSet,valSet = get_data_loader(batch_size)
@@ -118,7 +121,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
     for i in range(0,batch_size*2,2):
         label_[i] = 1
     
-    label = torch.tensor(label_)
+    label = torch.tensor(label_).cuda()
     
     print("--------------Starting--------------")
     
@@ -134,6 +137,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
         for img,batch in iter(trainSet):
             if(len(batch)!=batch_size): 
                 break
+            img,batch=img.cuda(),batch.cuda()
             b = torch.split(img,600,dim=3) 
             
             
