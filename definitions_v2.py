@@ -81,7 +81,7 @@ def get_accuracy(model,set_, batch_size):
     
     label = torch.tensor(label_)
     
-    trainSet_,valSet_,__ = get_data_loader(150)
+    trainSet_,valSet_ = get_data_loader(150)
     if set_ == "train":
         data_ = trainSet_
     elif set_ == "val":
