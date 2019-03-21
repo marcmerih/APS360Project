@@ -96,7 +96,8 @@ def get_accuracy(model,set_, batch_size):
                 
             b = torch.split(img,600,dim=3) 
             img = torch.cat(b, 0)
-
+            print(img.shape)
+            print(label.shape)
 
             output = model(img).cuda()
       
