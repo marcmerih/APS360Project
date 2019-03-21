@@ -73,7 +73,9 @@ class BaseModel(nn.Module):
         
 
 
-def get_accuracy(model,set_):
+def get_accuracy(model,set_, batch_size):
+    if(len(batch)!=batch_size): 
+                break
     label_ = [0]*(300)
     for i in range(0,300,2):
         label_[i] = 1
@@ -107,7 +109,7 @@ def get_accuracy(model,set_):
 def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(mdl.parameters(), lr=learning_rate, momentum=0.9)
-    trainSet,valSet,testSet = get_data_loader(batch_size)
+    trainSet,valSet = get_data_loader(batch_size)
     train_acc, val_acc = [], []
     n = 0 # the number of iterations
     
@@ -128,8 +130,9 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
         t1 = t.time()
 
         itera = 0
-        for img,_ in iter(trainSet):
-            
+        for img,batch in iter(trainSet):
+            if(len(batch)!=batch_size): 
+                break
             b = torch.split(img,600,dim=3) 
             
             
@@ -149,13 +152,13 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
             print(itera)
         break
         # Calculate the statistics
-        train_acc.append(get_accuracy(mdl,"train"))
+        train_acc.append(get_accuracy(mdl,"train", batch_size))
         
-        val_acc.append(get_accuracy(mdl,"val"))  # compute validation accuracy
+     #   val_acc.append(get_accuracy(mdl,"val"))  # compute validation accuracy
         n += 1
 
         
-        print("Epoch",n,"Done in:",t.time() - t1, "With Training Accuracy:",train_acc[-1], "And Validation Accuracy:",val_acc[-1])
+        print("Epoch",n,"Done in:",t.time() - t1, "With Training Accuracy:",train_acc[-1])#, "And Validation Accuracy:",val_acc[-1])
 
 
         # Save the current model (checkpoint) to a file
