@@ -74,8 +74,7 @@ class BaseModel(nn.Module):
 
 
 def get_accuracy(model,set_, batch_size):
-    if(len(batch)!=batch_size): 
-                break
+    
     label_ = [0]*(300)
     for i in range(0,300,2):
         label_[i] = 1
@@ -91,16 +90,17 @@ def get_accuracy(model,set_, batch_size):
     
     correct = 0
     total = 0
-    for img, _ in data_:
-        b = torch.split(img,600,dim=3) 
-        img = torch.cat(b, 0)
-        
-        
-        output = model(img) 
-        pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
-        correct += pred.eq(label.view_as(pred)).sum().item() #compute how many predictions were correct
-        total += img.shape[0] #get the total ammount of predictions
-        break
+    for img, batch, in data_:
+        if(len(batch)==batch_size):
+            b = torch.split(img,600,dim=3) 
+            img = torch.cat(b, 0)
+
+
+            output = model(img) 
+            pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
+            correct += pred.eq(label.view_as(pred)).sum().item() #compute how many predictions were correct
+            total += img.shape[0] #get the total ammount of predictions
+            break
         
     return correct / total
         
@@ -150,7 +150,6 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
             optimizer.step()  
             optimizer.zero_grad()     
             print(itera)
-        break
         # Calculate the statistics
         train_acc.append(get_accuracy(mdl,"train", batch_size))
         
