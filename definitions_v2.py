@@ -138,7 +138,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
             
             img = torch.cat(b, 0)
             
-            print(img.size())
+         #   print(img.size())
             
             
             itera += batch_size*2
@@ -168,7 +168,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
     
     print("--------------Finished--------------")
     
-    return iterations,train_acc, val_acc
+    return iterations,train_acc #, val_acc
 
 
 
