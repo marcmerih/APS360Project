@@ -27,8 +27,8 @@ from PIL import Image, ImageOps
 #--------------------Data Loading and Splitting ---------------------------------
 def get_data_loader(batch_size):
 
-    train_path = 'APS360Project/trainData'
-    val_path = 'APS360Project/trainData'
+    train_path = 'trainData'
+    val_path = 'trainData'
 #test_path = 'testData'
     
     transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
