@@ -215,7 +215,7 @@ def get_alex_data_loader(batch_size, shuffle=True):
     #alex_val_loader = torch.utils.data.DataLoader(val_sampler, batch_size=batch_size, shuffle=shuffle)
 
     #test_sampler =  torchvision.datasets.DatasetFolder(root='testData', loader=torch.load, extensions=list(['']))
-    #alex_test_loader = torch.utils.data.DataLoader(test_sampler, batch_size=batch_size, shuffle=shuffle)
+        #alex_test_loader = torch.utils.data.DataLoader(test_sampler, batch_size=batch_size, shuffle=shuffle)
 
     return alex_train_loader#, alex_train_loader, alex_test_loader
 
@@ -275,6 +275,7 @@ def alextrain(model, batch_size=32, num_epochs=15, lr=0.0001):
         n += 1
         iters.append(n)
 
+
     plt.title("Training Curve")
     plt.plot(iters, train_acc, label="Train")
     #plt.plot(iters, val_acc, label="Validation")
@@ -285,3 +286,5 @@ def alextrain(model, batch_size=32, num_epochs=15, lr=0.0001):
 
     print("Final Training Accuracy: {}".format(train_acc[-1]))
     #print("Final Validation Accuracy: {}".format(val_acc[-1]))
+
+    return iterations, train_acc
