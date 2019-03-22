@@ -186,7 +186,7 @@ from a3code import AlexNetFeatures
 myfeature_model = AlexNetFeatures() #loads pre-trained weights
 atrain_loader = get_data_loader(1)
 a=0
-for img, l in atest_loader:
+for img, l in atrain_loader:
     features=myfeature_model(img)
     i=str(a)
     label=l[0].item()
