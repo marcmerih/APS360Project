@@ -28,20 +28,20 @@ from PIL import Image, ImageOps
 def get_data_loader(batch_size):
 
     train_path = r'trainData'
-    val_path = r'valData'
-    test_path = r'testData'
+    #val_path = r'valData'
+    #test_path = r'testData'
 
     transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
     trainSet = torchvision.datasets.ImageFolder(root=train_path, transform=transform)
     train_data_loader = torch.utils.data.DataLoader(trainSet, batch_size=batch_size, shuffle=True)
 
-    valSet = torchvision.datasets.ImageFolder(root=val_path, transform=transform)
-    val_data_loader = torch.utils.data.DataLoader(valSet, batch_size=batch_size, shuffle=True)
+    #valSet = torchvision.datasets.ImageFolder(root=val_path, transform=transform)
+    #val_data_loader = torch.utils.data.DataLoader(valSet, batch_size=batch_size, shuffle=True)
 
-    testSet = torchvision.datasets.ImageFolder(root=test_path, transform=transform)
-    test_data_loader  = torch.utils.data.DataLoader(testSet, batch_size=batch_size, shuffle=True)
-    return train_data_loader ,val_data_loader,test_data_loader
+    #testSet = torchvision.datasets.ImageFolder(root=test_path, transform=transform)
+    #test_data_loader  = torch.utils.data.DataLoader(testSet, batch_size=batch_size, shuffle=True)
+    return train_data_loader #, val_data_loader, #test_data_loader
 
 
 
@@ -83,8 +83,8 @@ def get_accuracy(model,set_):
     trainSet_,valSet_,__ = get_data_loader(150)
     if set_ == "train":
         data_ = trainSet_
-    elif set_ == "val":
-        data_ = valSet_
+    #elif set_ == "val":
+        #data_ = valSet_
 
 
     correct = 0
@@ -107,7 +107,7 @@ def get_accuracy(model,set_):
 def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(mdl.parameters(), lr=learning_rate, momentum=0.9)
-    trainSet,valSet,testSet = get_data_loader(batch_size)
+    trainSet = get_data_loader(batch_size)
     train_acc, val_acc = [], []
     n = 0 # the number of iterations
 
@@ -151,11 +151,11 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
         # Calculate the statistics
         train_acc.append(get_accuracy(mdl,"train"))
 
-        val_acc.append(get_accuracy(mdl,"val"))  # compute validation accuracy
+        #val_acc.append(get_accuracy(mdl,"val"))  # compute validation accuracy
         n += 1
 
 
-        print("Epoch",n,"Done in:",t.time() - t1, "With Training Accuracy:",train_acc[-1], "And Validation Accuracy:",val_acc[-1])
+        print("Epoch",n,"Done in:",t.time() - t1, "With Training Accuracy:",train_acc[-1])#, "And Validation Accuracy:",val_acc[-1])
 
 
         # Save the current model (checkpoint) to a file
@@ -173,18 +173,18 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
 def plot(iterations,train_acc, val_acc):
     plt.title("Training Curve")
     plt.plot(iterations, train_acc, label="Train")
-    plt.plot(iterations, val_acc, label="Validation")
+    #plt.plot(iterations, val_acc, label="Validation")
     plt.xlabel("Epochs")
     plt.ylabel("Training Accuracy")
     plt.legend(loc='best')
     plt.show()
 
     print("Final Training Accuracy: {}".format(train_acc[-1]))
-    print("Final Validation Accuracy: {}".format(val_acc[-1]))
+    #print("Final Validation Accuracy: {}".format(val_acc[-1]))
 
 from a3code import AlexNetFeatures
 myfeature_model = AlexNetFeatures() #loads pre-trained weights
-atrain_loader, aval_loader, atest_loader = get_data_loader(1)
+atrain_loader = get_data_loader(1)
 a=0
 for img, l in atest_loader:
     features=myfeature_model(img)
@@ -211,13 +211,13 @@ def get_alex_data_loader(batch_size, shuffle=True):
 
     train_sampler = torchvision.datasets.DatasetFolder(root='trainData', loader=torch.load, extensions=list(['']))
     alex_train_loader = torch.utils.data.DataLoader(train_sampler, batch_size=batch_size, shuffle=shuffle)
-    val_sampler =  torchvision.datasets.DatasetFolder(root='valData', loader=torch.load, extensions=list(['']))
-    alex_val_loader = torch.utils.data.DataLoader(val_sampler, batch_size=batch_size, shuffle=shuffle)
+    #val_sampler =  torchvision.datasets.DatasetFolder(root='valData', loader=torch.load, extensions=list(['']))
+    #alex_val_loader = torch.utils.data.DataLoader(val_sampler, batch_size=batch_size, shuffle=shuffle)
 
-    test_sampler =  torchvision.datasets.DatasetFolder(root='testData', loader=torch.load, extensions=list(['']))
-    alex_test_loader = torch.utils.data.DataLoader(test_sampler, batch_size=batch_size, shuffle=shuffle)
+    #test_sampler =  torchvision.datasets.DatasetFolder(root='testData', loader=torch.load, extensions=list(['']))
+    #alex_test_loader = torch.utils.data.DataLoader(test_sampler, batch_size=batch_size, shuffle=shuffle)
 
-    return alex_train_loader, alex_train_loader, alex_test_loader
+    return alex_train_loader#, alex_train_loader, alex_test_loader
 
 
 def get_alex_accuracy(model, train=True):
@@ -228,8 +228,8 @@ def get_alex_accuracy(model, train=True):
 
     if train:
         data = alex_train_loader
-    else:
-        train, data, test = alex_train_loader, alex_val_loader, alex_test_loader = get_alex_data_loader(1)
+    #else:
+    #    train, data, test = alex_train_loader, alex_val_loader, alex_test_loader = get_alex_data_loader(1)
 
     correct = 0
     total = 0
@@ -242,7 +242,7 @@ def get_alex_accuracy(model, train=True):
 
 def alextrain(model, batch_size=32, num_epochs=15, lr=0.0001):
 
-    atrain_loader, aval_loader, atest_loader = get_alex_data_loader(1)
+    atrain_loader = get_alex_data_loader(1)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9)
 
@@ -271,17 +271,17 @@ def alextrain(model, batch_size=32, num_epochs=15, lr=0.0001):
             correct += pred.eq(labels.view_as(pred)).sum().item()
             total += inputs.shape[0]
         train_acc.append(correct/total) # compute training accuracy
-        val_acc.append(get_alex_accuracy(model, train=False))  # compute validation accuracy
+        #val_acc.append(get_alex_accuracy(model, train=False))  # compute validation accuracy
         n += 1
         iters.append(n)
 
     plt.title("Training Curve")
     plt.plot(iters, train_acc, label="Train")
-    plt.plot(iters, val_acc, label="Validation")
+    #plt.plot(iters, val_acc, label="Validation")
     plt.xlabel("Iterations")
     plt.ylabel("Training Accuracy")
     plt.legend(loc='best')
     plt.show()
 
     print("Final Training Accuracy: {}".format(train_acc[-1]))
-    print("Final Validation Accuracy: {}".format(val_acc[-1]))
+    #print("Final Validation Accuracy: {}".format(val_acc[-1]))
