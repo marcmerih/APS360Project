@@ -11,5 +11,5 @@ import pickle
 
 
 modelBase = da.AlexNet()
-iterations,train_acc = da.alextrain(modelBase,batch_size = 32, epochs = 10,lr = 0.0001)
+iterations,train_acc = da.alextrain(modelBase,batch_size = 32, num_epochs = 10,lr = 0.0001)
 da.plot(iterations,train_acc)
