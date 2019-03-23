@@ -85,14 +85,10 @@ class ResNet(nn.Module):
 
     def forward(self, x):
         x = x.view(-1, 2768896)
-        self.fc1 = nn.Linear( 256* 6 * 6, 32)
-        self.fc2 = nn.Linear(32, 9)
-
-    def forward(self, x):
-        x = x.view(-1, 256 * 6 * 6)
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
         return x
+\
 
 
 #-------------------Train Loop (Ft. Get Accuracy & Plotting)----------------------------------------
