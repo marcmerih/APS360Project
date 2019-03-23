@@ -29,9 +29,9 @@ from a3code import AlexNetFeatures
 #--------------------Data Loading and Splitting ---------------------------------
 def get_data_loader(batch_size):
 
-    train_path = r'F:\trainData'
-    val_path = r'F:\valData'
-    test_path = r'F:\testData'
+    train_path = r'trainData'
+    val_path = r'valData'
+    #test_path = r'testData'
 
     transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
@@ -41,9 +41,9 @@ def get_data_loader(batch_size):
     valSet = torchvision.datasets.ImageFolder(root=val_path, transform=transform)
     val_data_loader = torch.utils.data.DataLoader(valSet, batch_size=batch_size, shuffle=True)
 
-    testSet = torchvision.datasets.ImageFolder(root=test_path, transform=transform)
-    test_data_loader  = torch.utils.data.DataLoader(testSet, batch_size=batch_size, shuffle=True)
-    return train_data_loader ,val_data_loader,test_data_loader
+    #testSet = torchvision.datasets.ImageFolder(root=test_path, transform=transform)
+    #test_data_loader  = torch.utils.data.DataLoader(testSet, batch_size=batch_size, shuffle=True)
+    return train_data_loader ,val_data_loader#,test_data_loader
 
 
 
@@ -212,10 +212,10 @@ def get_alex_data_loader(batch_size, shuffle=True):
     val_sampler =  torchvision.datasets.DatasetFolder(root='valData', loader=torch.load, extensions=list(['']))
     alex_val_loader = torch.utils.data.DataLoader(val_sampler, batch_size=batch_size, shuffle=shuffle)
 
-    test_sampler =  torchvision.datasets.DatasetFolder(root='testData', loader=torch.load, extensions=list(['']))
-    alex_test_loader = torch.utils.data.DataLoader(test_sampler, batch_size=batch_size, shuffle=shuffle)
+    #test_sampler =  torchvision.datasets.DatasetFolder(root='testData', loader=torch.load, extensions=list(['']))
+    #alex_test_loader = torch.utils.data.DataLoader(test_sampler, batch_size=batch_size, shuffle=shuffle)
 
-    return alex_train_loader, alex_train_loader, alex_test_loader
+    return alex_train_loader, alex_train_loader#, alex_test_loader
 
 
 def get_alex_accuracy(model, train=True):
@@ -227,7 +227,7 @@ def get_alex_accuracy(model, train=True):
     if train:
         data = alex_train_loader
     else:
-        train, data, test = alex_train_loader, alex_val_loader, alex_test_loader = get_alex_data_loader(1)
+        train, data, test = alex_train_loader, alex_val_loader = get_alex_data_loader(1)
 
     correct = 0
     total = 0
