@@ -366,13 +366,13 @@ class ResNet(nn.Module):
         x = self.layer4(x)
 
         x = self.avgpool(x)
-        x = x.view(x.size(0), -1)
-        x = self.fc(x)
+      #  x = x.view(x.size(0), -1)
+       # x = self.fc(x)
 
         return x
 
 
-[docs]def resnet18(pretrained=False, **kwargs):
+def resnet18(pretrained=False, **kwargs):
     """Constructs a ResNet-18 model.
 
     Args:
