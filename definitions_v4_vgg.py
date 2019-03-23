@@ -57,7 +57,7 @@ class Model(nn.Module):
     def __init__(self, input_size):
         super(Model, self).__init__()
         self.name = "Base"
-        self.input_size= Input(shape=(3,600,600),name = 'image_input')
+        self.input_size= Input(shape=(600,600,3),name = 'image_input')
         self.model_vgg16_conv = VGG16(weights='imagenet', include_top=False)
         self.output_vgg16_conv = self.model_vgg16_conv(input_size)
         self.pool = nn.MaxPool2d(2, 2)
@@ -69,13 +69,21 @@ class Model(nn.Module):
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(model_vgg16_conv)))
+        print(type(x))
         x = self.pool(F.relu(self.conv2(output_vgg16_conv)))
-        x = x.view(-1,int(7*147 * 147) )
+        print(type(x))
+        x = x.view(-1,int(7 * 147 * 147) )
+        print(type(x))
         x = self.x1(x)
+        print(type(x))
         x = self.x2(x)
+        print(type(x))
         x = self.x3(x)
+        print(type(x))
         x = self.x4(x)
+        print(type(x))
         x = x.squeeze(1) # Flatten to [batch_size]
+        print(type(x))
         return x
 
 
