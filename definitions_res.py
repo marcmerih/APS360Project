@@ -28,7 +28,7 @@ from resnet import *
 
 
 import torchvision.models as models
-resnet18 = resnet18(pretrained=True)
+resnet18 = resnet18(pretrained=True).cuda()
 
 #--------------------Data Loading and Splitting ---------------------------------
 def get_data_loader(batch_size):
@@ -138,7 +138,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
 
 
     label = torch.tensor(label_).cuda()
-
+    mdl = mdl.cuda()
     print("--------------Starting--------------")
 
 
