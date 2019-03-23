@@ -86,7 +86,7 @@ def HPFilter(img):
                        [-2.,8.,-12.,8.,-2.],
                        [2.,-6.,8.,-6.,2.],
                        [-1.,2.,-2.,2.,1.]]])
-    weights=weights.unsqueeze(dim=0)
+    weights=weights.unsqueeze(dim=0).cuda()
     filteredimgs = F.conv2d(img, weights, padding=2).cuda()
     return filteredimgs
 
