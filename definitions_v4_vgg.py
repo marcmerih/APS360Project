@@ -50,7 +50,7 @@ def get_data_loader(batch_size):
 
     testSet = torchvision.datasets.ImageFolder(root=test_path, transform=transform)
     test_data_loader  = torch.utils.data.DataLoader(testSet, batch_size=batch_size, shuffle=True)
-    return train_data_loader ,val_data_loader,test_data_loader
+    return train_data_loader , val_data_loader, test_data_loader
 
 
 
@@ -60,9 +60,9 @@ class Model(nn.Module):
     def __init__(self, input_size):
         super(Model, self).__init__()
         self.name = "Base"
-        self.input_size = Input(shape=(3,600,600),name = 'image_input')
-        model_vgg16_conv = VGG16(weights='imagenet', include_top=False)
-        output_vgg16_conv = self.model_vgg16_conv(input_size)
+        self.input_size= Input(shape=(3,600,600),name = 'image_input')
+        self.model_vgg16_conv = VGG16(weights='imagenet', include_top=False)
+        self.output_vgg16_conv = self.model_vgg16_conv(input_size)
         self.pool = nn.MaxPool2d(2, 2)
         self.x1 = Flatten(name='flatten')(output_vgg16_conv)
         self.x2 = Dense(4096, activation='relu', name='fc1')(x)
@@ -74,10 +74,10 @@ class Model(nn.Module):
         x = self.pool(F.relu(self.conv1(model_vgg16_conv)))
         x = self.pool(F.relu(self.conv2(output_vgg16_conv)))
         x = x.view(-1,int(7*147 * 147) )
-        x = self.fc1(x1)
-        x = self.fc2(x2)
-        x = self.fc2(x3)
-        x = self.fc2(x4)
+        x = self.x1(x)
+        x = self.x2(x)
+        x = self.x3(x)
+        x = self.x4(x)
         x = x.squeeze(1) # Flatten to [batch_size]
         return x
 
