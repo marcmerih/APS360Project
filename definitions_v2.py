@@ -82,7 +82,7 @@ def HPFilter(img):
         im=np.transpose(im,[1,2,0])
         im=im/2+0.5
         im = im.squeeze()
-        result=ndimage.convolve(im, np.atleast_3d(weights))
+        result=ndimage.convolve(im.cpu(), np.atleast_3d(weights))
         result = torch.from_numpy(result)
         result=np.transpose(result,[2,0,1])
         filteredimgs.append(result)
@@ -112,7 +112,7 @@ def get_accuracy(mdl,set_, batch_size):
     correct = 0
     total = 0
     for img,batch in data_:
-        img,batch=img,batch.cuda()
+        img,batch=img.cuda(),batch.cuda()
         if(len(batch)==batch_size): 
                 
             b = torch.split(img,600,dim=3) 
@@ -120,7 +120,7 @@ def get_accuracy(mdl,set_, batch_size):
             filteredimgs=HPFilter(img)
             output= mdl(filteredimgs).cuda()
         #    output = mdl(img).cuda()
-      
+        
             pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
             correct += pred.eq(label.view_as(pred)).sum().item() #compute how many predictions were correct
             total += img.shape[0] #get the total ammount of predictions
@@ -155,7 +155,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
             
             if(len(batch)!=batch_size): 
                 break
-            img,batch=img,batch.cuda()
+            img,batch=img.cuda(),batch.cuda()
             b = torch.split(img,600,dim=3) 
             img = torch.cat(b, 0)
             
