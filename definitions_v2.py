@@ -21,7 +21,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time as t
 import torch.optim as optim
-import scipy.ndimage
+from scipy import ndimage as ndimage
 from PIL import Image, ImageOps
 
 
