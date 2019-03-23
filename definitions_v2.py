@@ -131,11 +131,6 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
    
     for epoch in range(epochs):  # loop over the dataset multiple times
         t1 = t.time()
-        weights = torch.tensor([[-1.,2.,-2.,2.,-1.],
-                       [2.,-6.,8.,-6.,2.],
-                       [-2.,8.,-12.,8.,-2.],
-                       [2.,-6.,8.,-6.,2.],
-                       [-1.,2.,-2.,2.,1.]])
         itera = 0
         filteredimg=[]
         for img,batch in iter(trainSet):
@@ -152,16 +147,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
          #   print(label)
             
             itera += batch_size*2
-            
-            for i in img:
-                convolve=i.squeeze()
-                convolve = np.transpose(convolve, [1,2,0])
-                print(convolve.shape)
-                result=ndimage.convolve(convolve, np.atleast_3d(weights))
-                result = np.transpose(result, [1,2,0])
-                filteredimg.append(result)
-                print(result.shape)
-            print(len(filteredimg))
+       
             
             out = mdl(img)
 
