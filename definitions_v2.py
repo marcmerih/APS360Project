@@ -155,7 +155,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
         # Calculate the statistics
         train_acc.append(get_accuracy(mdl,"train", batch_size))
         
-        val_acc.append(get_accuracy(mdl,"val"))  # compute validation accuracy
+        val_acc.append(get_accuracy(mdl,"val", batch_size))  # compute validation accuracy
         n += 1
 
         
