@@ -23,7 +23,7 @@ import time as t
 import torch.optim as optim
 from PIL import Image, ImageOps
 
-from resnet import * as
+from resnet import *
 
 
 import torchvision.models as models
@@ -94,11 +94,12 @@ class ResNet(nn.Module):
 
 
 def get_accuracy(model,set_):
-    label_ = [0]*(300)
-    for i in range(0,300,2):
-        label_[i] = 1
+    label_ = [0]*(150)
+    label_.extend([1]*(150))
 
-    label = torch.tensor(label_)
+
+    label = torch.tensor(label_).cuda()
+
 
     trainSet_,valSet_,__ = get_data_loader(150)
     if set_ == "train":
@@ -111,10 +112,10 @@ def get_accuracy(model,set_):
     total = 0
     for img, _ in data_:
         b = torch.split(img,600,dim=3)
-        img = torch.cat(b, 0)
+        img = torch.cat(b, 0).cuda()
 
-
-        output = model(img)
+        res = resnet(img)
+        output = model(res)
         pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
         correct += pred.eq(label.view_as(pred)).sum().item() #compute how many predictions were correct
         total += img.shape[0] #get the total ammount of predictions
@@ -131,11 +132,11 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
     train_acc, val_acc = [], []
     n = 0 # the number of iterations
 
-    label_ = [0]*(batch_size*2)
-    for i in range(0,batch_size*2,2):
-        label_[i] = 1
+    label_ = [0]*(batch_size)
+    label_.extend([1]*(batch_size))
 
-    label = torch.tensor(label_)
+
+    label = torch.tensor(label_).cuda()
 
     print("--------------Starting--------------")
 
@@ -160,8 +161,8 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
 
 
             itera += batch_size*2
-            res = resnet(img)
-            out = mdl(res)
+            res = resnet(img).cuda()
+            out = mdl(res).cuda()
 
             loss = criterion(out, label)
             loss.backward()
