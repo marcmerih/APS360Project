@@ -98,7 +98,7 @@ class ResNet(nn.Module):
 
 def get_accuracy(model,set_,batch_size):
     label_ = [0]*(batch_size)
-    label_.extend([1]*(batch_size)
+    label_.extend([1]*(batch_size))
 
 
     label = torch.tensor(label_).cuda()
