@@ -96,7 +96,7 @@ class VGG(nn.Module):
         self.layer2 = nn.Linear(5000, 200)
         self.layer3 = nn.Linear(200, 2)
     def forward(self, img):
-        #flattened = img.view(-1,36928)
+        flattened = img.view(-1,36928)
         activation1 = F.relu(self.layer1(flattened))
         activation2 = F.relu(self.layer2(activation1))
         output = self.layer3(activation2)
