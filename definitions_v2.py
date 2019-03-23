@@ -82,12 +82,12 @@ def HPFilter(img):
         im=np.transpose(im,[1,2,0])
         im=im/2+0.5
         im = im.squeeze()
-        result=ndimage.convolve(im, np.atleast_3d(weights))
+        result=ndimage.convolve(im, np.atleast_3d(weights)).cuda()
         result = torch.from_numpy(result)
         result=np.transpose(result,[2,0,1])
         filteredimgs.append(result)
     filteredimgs = torch.stack(filteredimgs)
-    return filteredimgs
+    return filteredimgs.cuda()
 
 #-------------------Train Loop (Ft. Get Accuracy & Plotting)----------------------------------------
         
