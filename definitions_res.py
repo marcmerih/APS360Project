@@ -626,4 +626,3 @@ def alextrain(model, batch_size=32, num_epochs=15, lr=0.0001):
     #print("Final Validation Accuracy: {}".format(val_acc[-1]))
 
     return iterations, train_acc
->>>>>>> 45ccdd150aae0148d15635a09297f89f2c473889
