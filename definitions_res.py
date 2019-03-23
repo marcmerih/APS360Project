@@ -85,6 +85,11 @@ class ResNet(nn.Module):
 
     def forward(self, x):
         x = x.view(-1, 2768896)
+        self.fc1 = nn.Linear( 256* 6 * 6, 32)
+        self.fc2 = nn.Linear(32, 9)
+
+    def forward(self, x):
+        x = x.view(-1, 256 * 6 * 6)
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
         return x
@@ -162,8 +167,11 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
 
 
             itera += batch_size*2
-            res = resnet18(img)
-            out = mdl(res)
+
+            res = resnet18(img).cuda()
+            print(res.size())
+            out = mdl(res).cuda()
+
 
             loss = criterion(out, label)
             loss.backward()
@@ -205,4 +213,3 @@ def plot(iterations,train_acc, val_acc):
 
     print("Final Training Accuracy: {}".format(train_acc[-1]))
     #print("Final Validation Accuracy: {}".format(val_acc[-1]))
-
