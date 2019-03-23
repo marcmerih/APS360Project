@@ -116,7 +116,7 @@ def get_accuracy(model,set_, batch_size):
                 
             b = torch.split(img,600,dim=3) 
             img = torch.cat(b, 0)
-            filteredimgs=HPFilter(img)
+            filteredimgs=HPFilter(img).cuda()
             out = mdl(filteredimgs)
             output = model(img).cuda()
       
@@ -161,7 +161,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
          #   print(label)
             
             itera += batch_size*2
-            filteredimgs=HPFilter(img)
+            filteredimgs=HPFilter(img).cuda()
             out = mdl(filteredimgs)
 
             loss = criterion(out, label)  
