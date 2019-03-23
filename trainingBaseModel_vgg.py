@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Mar 12 13:04:14 2019
-
 @author: chris
 """
 import definitions_v4_vgg as d
