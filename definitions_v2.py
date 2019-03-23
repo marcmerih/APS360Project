@@ -82,7 +82,7 @@ def HPFilter(img):
         im=np.transpose(im,[1,2,0])
         im=im/2+0.5
         im = im.squeeze()
-        result=ndimage.convolve(im, np.atleast_3d(weights)).cuda()
+        result=ndimage.convolve(im, np.atleast_3d(weights))
         result = torch.from_numpy(result)
         result=np.transpose(result,[2,0,1])
         filteredimgs.append(result)
@@ -111,12 +111,12 @@ def get_accuracy(model,set_, batch_size):
     correct = 0
     total = 0
     for img,batch in data_:
-        img,batch=img.cuda(),batch.cuda()
+        img,batch=img,batch.cuda()
         if(len(batch)==batch_size): 
                 
             b = torch.split(img,600,dim=3) 
             img = torch.cat(b, 0)
-            filteredimgs=HPFilter(img).cuda()
+            filteredimgs=HPFilter(img)
             out = mdl(filteredimgs)
             output = model(img).cuda()
       
