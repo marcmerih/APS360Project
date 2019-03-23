@@ -149,6 +149,7 @@ class ResNet(nn.Module):
 
         x = self.avgpool(x)
 <<<<<<< HEAD
+<<<<<<< HEAD
         x = x.view(x.size(0), -1)
         x = self.fc(x)
 
@@ -369,6 +370,10 @@ class ResNet(nn.Module):
         x = self.avgpool(x)
       #  x = x.view(x.size(0), -1)
        # x = self.fc(x)
+=======
+        #x = x.view(x.size(0), -1)
+        #x = self.fc(x)
+>>>>>>> 2044b5a1553748ec92cbae85c5296a6a6ce38122
 =======
         #x = x.view(x.size(0), -1)
         #x = self.fc(x)

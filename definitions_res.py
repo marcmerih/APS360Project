@@ -81,17 +81,23 @@ class ResNet(nn.Module):
         super(ResNet, self).__init__()
         self.name = "ResNet"
 <<<<<<< HEAD
+<<<<<<< HEAD
         self.fc1 = nn.Linear( 256* 17 * 36, 1000)
         self.fc2 = nn.Linear(1000,2 )
 
     def forward(self, x):
         x = x.view(-1, 256 * 17 * 36)
 =======
+=======
+>>>>>>> 2044b5a1553748ec92cbae85c5296a6a6ce38122
         self.fc1 = nn.Linear( 256* 6 * 6, 32)
         self.fc2 = nn.Linear(32, 9)
 
     def forward(self, x):
         x = x.view(-1, 256 * 6 * 6)
+<<<<<<< HEAD
+>>>>>>> 2044b5a1553748ec92cbae85c5296a6a6ce38122
+=======
 >>>>>>> 2044b5a1553748ec92cbae85c5296a6a6ce38122
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
@@ -171,10 +177,15 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
 
             itera += batch_size*2
 <<<<<<< HEAD
+<<<<<<< HEAD
             
             res = resnet101(img).cuda()
             print(res.size())
             out = mdl(res).cuda()
+=======
+            res = resnet101(img)
+            out = mdl(res)
+>>>>>>> 2044b5a1553748ec92cbae85c5296a6a6ce38122
 =======
             res = resnet101(img)
             out = mdl(res)
