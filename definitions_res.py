@@ -83,13 +83,9 @@ class ResNet(nn.Module):
         self.fc1 = nn.Linear( 2768896,1000)
         self.fc2 = nn.Linear(1000, 2)
 
-    def forward(self, x):
-        x = x.view(-1, 2768896)
-        self.fc1 = nn.Linear( 256* 6 * 6, 32)
-        self.fc2 = nn.Linear(32, 9)
 
     def forward(self, x):
-        x = x.view(-1, 256 * 6 * 6)
+        x = x.view(-1, 2768896)
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
         return x
@@ -168,9 +164,9 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
 
             itera += batch_size*2
 
-            res = resnet18(img).cuda()
+            res = resnet18(img)
             print(res.size())
-            out = mdl(res).cuda()
+            out = mdl(res)
 
 
             loss = criterion(out, label)
