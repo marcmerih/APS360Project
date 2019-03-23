@@ -28,7 +28,14 @@ from keras.applications.vgg16 import preprocess_input
 from keras.layers import Input, Flatten, Dense
 from keras.models import Model
 import numpy as np
+from keras.applications.vgg19 import VGG19
+from keras.preprocessing import image
+from keras.applications.vgg19 import preprocess_input
+from keras.models import Model
+import numpy as np
 
+base_model = VGG19(weights='imagenet')
+model = Model(inputs=base_model.input, outputs=base_model.get_layer('block4_pool').output)
 
 
 #--------------------Data Loading and Splitting ---------------------------------
@@ -54,7 +61,7 @@ def get_data_loader(batch_size):
 
 #--------------------Base Model----------------------------------------------------
 
-class Model(nn.Module):
+#class Model(nn.Module):
     def __init__(self, input_size):
         super(Model, self).__init__()
         self.input_size = 600
