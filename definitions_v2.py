@@ -29,7 +29,7 @@ from PIL import Image, ImageOps
 def get_data_loader(batch_size):
 
     train_path = 'trainData'
-    val_path = 'trainData'
+    val_path = 'valData'
 #test_path = 'testData'
     
     transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
@@ -155,11 +155,11 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
         # Calculate the statistics
         train_acc.append(get_accuracy(mdl,"train", batch_size))
         
-     #   val_acc.append(get_accuracy(mdl,"val"))  # compute validation accuracy
+        val_acc.append(get_accuracy(mdl,"val"))  # compute validation accuracy
         n += 1
 
         
-        print("Epoch",n,"Done in:",t.time() - t1, "With Training Accuracy:",train_acc[-1])#, "And Validation Accuracy:",val_acc[-1])
+        print("Epoch",n,"Done in:",t.time() - t1, "With Training Accuracy:",train_acc[-1]), "And Validation Accuracy:",val_acc[-1])
 
 
         # Save the current model (checkpoint) to a file
@@ -170,7 +170,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
     
     print("--------------Finished--------------")
     
-    return iterations,train_acc #, val_acc
+    return iterations,train_acc , val_acc
 
 
 
