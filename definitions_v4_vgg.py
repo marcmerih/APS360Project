@@ -53,7 +53,7 @@ def get_data_loader(batch_size):
 
 #--------------------Base Model----------------------------------------------------
 
-class VGGModel(nn.Module):
+class Model(nn.Module):
     def __init__(self, input_size):
         super(VGGModel, self).__init__()
         self.name = "Base"
