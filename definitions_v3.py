@@ -133,6 +133,7 @@ def LPFilter(img):
     weights=np.dot(weights2_m1, weights2_m2, weights2_m3)
     weights=torch.tensor(weights)
     weights3=[weights,weights,weights]
+    weights3=torch.tensor(weights3)
     weights3=weights3.unsqueeze(dim=0).cuda()
     filteredimgs = F.conv2d(img, weights3, padding=2).cuda()
     return filteredimgs
