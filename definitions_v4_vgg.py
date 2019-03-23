@@ -57,7 +57,7 @@ class Model(nn.Module):
     def __init__(self, input_size):
         super(Model, self).__init__()
         self.name = "Base"
-        self.input= Input(shape=(3,input_size,input_size),name = 'image_input')
+        self.input= Input(shape=(1,input_size,input_size,3),name = 'image_input')
         self.model_vgg16_conv = VGG16(weights='imagenet', include_top=False)
         self.model_vgg16_conv.summary()
         self.output_vgg16_conv = self.model_vgg16_conv(self.input)
