@@ -81,8 +81,8 @@ class ResNet(nn.Module):
     def __init__(self,):
         super(ResNet, self).__init__()
         self.name = "ResNet"
-        self.fc1 = nn.Linear( 2768896,1000)
-        self.fc2 = nn.Linear(1000, 2)
+        self.fc1 = nn.Linear( 2768896,100)
+        self.fc2 = nn.Linear(100, 2)
 
     def forward(self, x):
         x = x.view(-1, 2768896)
