@@ -21,15 +21,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time as t
 import torch.optim as optim
+from scipy import ndimage as ndimage
 from PIL import Image, ImageOps
 
 
 #--------------------Data Loading and Splitting ---------------------------------
 def get_data_loader(batch_size):
 
-    train_path = r'F:\trainData'
-    val_path = r'F:\valData'
-    test_path = r'F:\testData'
+    train_path = 'trainData'
+    val_path = 'trainData'
+#test_path = 'testData'
     
     transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
@@ -39,9 +40,9 @@ def get_data_loader(batch_size):
     valSet = torchvision.datasets.ImageFolder(root=val_path, transform=transform)
     val_data_loader = torch.utils.data.DataLoader(valSet, batch_size=batch_size, shuffle=True)
 
-    testSet = torchvision.datasets.ImageFolder(root=test_path, transform=transform)
-    test_data_loader  = torch.utils.data.DataLoader(testSet, batch_size=batch_size, shuffle=True)
-    return train_data_loader ,val_data_loader,test_data_loader
+#    testSet = torchvision.datasets.ImageFolder(root=test_path, transform=transform)
+ #   test_data_loader  = torch.utils.data.DataLoader(testSet, batch_size=batch_size, shuffle=True)
+    return train_data_loader ,val_data_loader #,test_data_loader
 
 
     
@@ -73,14 +74,15 @@ class BaseModel(nn.Module):
         
 
 
-def get_accuracy(model,set_):
-    label_ = [0]*(300)
-    for i in range(0,300,2):
+def get_accuracy(model,set_, batch_size):
+    batch_size=16
+    label_ = [0]*(batch_size*2)
+    for i in range(batch_size,batch_size*2):
         label_[i] = 1
     
-    label = torch.tensor(label_)
+    label = torch.tensor(label_).cuda()
     
-    trainSet_,valSet_,__ = get_data_loader(150)
+    trainSet_,valSet_ = get_data_loader(batch_size)
     if set_ == "train":
         data_ = trainSet_
     elif set_ == "val":
@@ -89,56 +91,59 @@ def get_accuracy(model,set_):
     
     correct = 0
     total = 0
-    for img, _ in data_:
-        b = torch.split(img,600,dim=3) 
-        img = torch.cat(b, 0)
-        
-        
-        output = model(img) 
-        pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
-        correct += pred.eq(label.view_as(pred)).sum().item() #compute how many predictions were correct
-        total += img.shape[0] #get the total ammount of predictions
-        break
+    for img,batch in data_:
+        img,batch=img.cuda(),batch.cuda()
+        if(len(batch)==batch_size): 
+                
+            b = torch.split(img,600,dim=3) 
+            img = torch.cat(b, 0)
+
+            output = model(img).cuda()
+      
+            pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
+            correct += pred.eq(label.view_as(pred)).sum().item() #compute how many predictions were correct
+            total += img.shape[0] #get the total ammount of predictions
         
     return correct / total
         
 
 
-def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
+def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
+    mdl.cuda()
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(mdl.parameters(), lr=learning_rate, momentum=0.9)
-    trainSet,valSet,testSet = get_data_loader(batch_size)
+    trainSet,valSet = get_data_loader(batch_size)
     train_acc, val_acc = [], []
     n = 0 # the number of iterations
     
     label_ = [0]*(batch_size*2)
-    for i in range(0,batch_size*2,2):
+    for i in range(batch_size,batch_size*2):
         label_[i] = 1
     
-    label = torch.tensor(label_)
+    label = torch.tensor(label_).cuda()
     
     print("--------------Starting--------------")
     
     
    
     for epoch in range(epochs):  # loop over the dataset multiple times
-        
-        
-        
         t1 = t.time()
-
         itera = 0
-        for img,_ in iter(trainSet):
+        filteredimg=[]
+        for img,batch in iter(trainSet):
             
+            if(len(batch)!=batch_size): 
+                break
+            img,batch=img.cuda(),batch.cuda()
             b = torch.split(img,600,dim=3) 
             
             
             img = torch.cat(b, 0)
             
-            print(img.size())
-            
+         #   print(label)
             
             itera += batch_size*2
+            
             out = mdl(img)
 
             loss = criterion(out, label)  
@@ -146,16 +151,15 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
             
             optimizer.step()  
             optimizer.zero_grad()     
-            print(itera)
-        break
+           # print(itera)
         # Calculate the statistics
-        train_acc.append(get_accuracy(mdl,"train"))
+        train_acc.append(get_accuracy(mdl,"train", batch_size))
         
-        val_acc.append(get_accuracy(mdl,"val"))  # compute validation accuracy
+     #   val_acc.append(get_accuracy(mdl,"val"))  # compute validation accuracy
         n += 1
 
         
-        print("Epoch",n,"Done in:",t.time() - t1, "With Training Accuracy:",train_acc[-1], "And Validation Accuracy:",val_acc[-1])
+        print("Epoch",n,"Done in:",t.time() - t1, "With Training Accuracy:",train_acc[-1])#, "And Validation Accuracy:",val_acc[-1])
 
 
         # Save the current model (checkpoint) to a file
@@ -166,7 +170,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
     
     print("--------------Finished--------------")
     
-    return iterations,train_acc, val_acc
+    return iterations,train_acc #, val_acc
 
 
 
