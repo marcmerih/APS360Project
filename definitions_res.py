@@ -131,10 +131,11 @@ def get_accuracy(model,set_,batch_size):
 
 
 
-def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
+def train(mdl,epochs= 20,batch_size = 16,learning_rate =0.01):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(mdl.parameters(), lr=learning_rate, momentum=0.9)
-    trainSet,valSet = get_data_loader(batch_size)
+    #trainSet,valSet = get_data_loader(batch_size)
+    trainSet,valSet = get_RN_data_loader(batch_size)
     train_acc, val_acc = [], []
     n = 0 # the number of iterations
 
@@ -155,16 +156,16 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
         t1 = t.time()
 
 
-        for img,batch in iter(trainSet):
+        for res,batch in iter(trainSet):
 
             if len(batch)==batch_size:
                 
-                b = torch.split(img,600,dim=3)
+               # b = torch.split(img,600,dim=3)
 
 
-                img = torch.cat(b, 0).cuda()
+              #  res = torch.cat(b, 0).cuda()
 
-                res = resnet18(img)
+                #res = resnet18(img)
                 
                 out = mdl(res)
     
@@ -209,3 +210,53 @@ def plot(iterations,train_acc, val_acc):
 
     print("Final Training Accuracy: {}".format(train_acc[-1]))
     print("Final Validation Accuracy: {}".format(val_acc[-1]))
+
+
+RtrainSet,RvalSet = get_data_loader(1)
+
+def RNFeatures(dataSet,type_):
+    data = dataSet
+    i = 0
+    j= 0
+
+    for img, label in data:
+        b = torch.split(img,600,dim=3)
+
+        img = torch.cat(b, 0).cuda()
+        
+        output = resnet18(img)
+        
+
+
+        if type_ == 'train':
+            tensor_path = "tensor_set{1}_number{2}".format(type_,i)
+
+            torch.save(output,r'C:/Users/chris/OneDrive/Documents/GitHub/APS360Project/RtrainData/'+tensor_path)
+            i+=1
+        elif type_ == 'val':
+            tensor_path = "tensor_set{1}_number{2}".format(type_,j)
+
+            torch.save(output,r'C:/Users/chris/OneDrive/Documents/GitHub/APS360Project/RtrainData/'+tensor_path)
+            j+=1
+
+RNFeatures(RtrainSet,'train')
+RNFeatures(RvalSet,'val')
+
+def get_RN_data_loader(batch_size):
+
+    train_path = r'RtrainData'
+    val_path = r'RvalData'
+
+
+    trainSet = torchvision.datasets.DatasetFolder(root=train_path,loader = torch.load,extensions = list(['']))
+    train_data_loader = torch.utils.data.DataLoader(trainSet, batch_size=batch_size, shuffle=True)
+
+    valSet = torchvision.datasets.DatasetFolder(root=train_path,loader = torch.load,extensions = list(['']))
+    val_data_loader = torch.utils.data.DataLoader(valSet, batch_size=batch_size, shuffle=True)
+
+    #testSet = torchvision.datasets.DatasetFolder(root=test_path,loader = torch.load,extensions = list(['']))
+    #test_data_loader  = torch.utils.data.DataLoader(testSet, batch_size=batch_size, shuffle=True)
+   
+    return train_data_loader ,val_data_loader
+
+RtrainSet,RvalSet = get_Alex_data_loader(16)
