@@ -141,7 +141,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
             
             img = torch.cat(b, 0)
             
-         #   print(img.size())
+            print(img.shape())
          #   print(label)
             
             itera += batch_size*2
