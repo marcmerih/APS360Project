@@ -80,11 +80,11 @@ class ResNet(nn.Module):
     def __init__(self,):
         super(ResNet, self).__init__()
         self.name = "ResNet"
-        self.fc1 = nn.Linear( 256* 6 * 6, 32)
-        self.fc2 = nn.Linear(32, 9)
+        self.fc1 = nn.Linear( 2768896,1000)
+        self.fc2 = nn.Linear(1000, 2)
 
     def forward(self, x):
-        x = x.view(-1, 256 * 6 * 6)
+        x = x.view(-1, 2768896)
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
         return x
@@ -115,7 +115,7 @@ def get_accuracy(model,set_):
         b = torch.split(img,600,dim=3)
         img = torch.cat(b, 0).cuda()
 
-        res = resnet(img)
+        res = resnet18(img)
         output = model(res)
         pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
         correct += pred.eq(label.view_as(pred)).sum().item() #compute how many predictions were correct
