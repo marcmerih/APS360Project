@@ -118,8 +118,8 @@ def get_accuracy(mdl,set_, batch_size):
             b = torch.split(img,600,dim=3) 
             img = torch.cat(b, 0)
             filteredimgs=HPFilter(img)
-            out = mdl(filteredimgs)
-            output = model(img).cuda()
+            output= mdl(filteredimgs).cuda()
+        #    output = mdl(img).cuda()
       
             pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
             correct += pred.eq(label.view_as(pred)).sum().item() #compute how many predictions were correct
