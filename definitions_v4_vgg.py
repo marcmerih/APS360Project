@@ -35,7 +35,7 @@ def get_data_loader(batch_size):
 
     train_path = r'trainData'
     val_path = r'valData'
-    test_path = r'testData'
+    #test_path = r'testData'
 
     transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
@@ -45,9 +45,9 @@ def get_data_loader(batch_size):
     valSet = torchvision.datasets.ImageFolder(root=val_path, transform=transform)
     val_data_loader = torch.utils.data.DataLoader(valSet, batch_size=batch_size, shuffle=True)
 
-    testSet = torchvision.datasets.ImageFolder(root=test_path, transform=transform)
-    test_data_loader  = torch.utils.data.DataLoader(testSet, batch_size=batch_size, shuffle=True)
-    return train_data_loader , val_data_loader, test_data_loader
+    #testSet = torchvision.datasets.ImageFolder(root=test_path, transform=transform)
+    #test_data_loader  = torch.utils.data.DataLoader(testSet, batch_size=batch_size, shuffle=True)
+    return train_data_loader , val_data_loader#, test_data_loader
 
 
 
