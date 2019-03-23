@@ -139,17 +139,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
         itera = 0
         filteredimg=[]
         for img,batch in iter(trainSet):
-            for i in img:
-                convolve=i.squeeze()
-                convolve = np.transpose(convolve, [1,2,0])
-                print(convolve.shape)
-                result=ndimage.convolve(convolve, np.atleast_3d(weights))
-                result = np.transpose(result, [1,2,0])
-                filteredimg.append(result)
-                print(result.shape)
-            print(len(filteredimg))
-         
-        
+            
             if(len(batch)!=batch_size): 
                 break
             img,batch=img.cuda(),batch.cuda()
@@ -162,6 +152,17 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
          #   print(label)
             
             itera += batch_size*2
+            
+            for i in img:
+                convolve=i.squeeze()
+                convolve = np.transpose(convolve, [1,2,0])
+                print(convolve.shape)
+                result=ndimage.convolve(convolve, np.atleast_3d(weights))
+                result = np.transpose(result, [1,2,0])
+                filteredimg.append(result)
+                print(result.shape)
+            print(len(filteredimg))
+            
             out = mdl(img)
 
             loss = criterion(out, label)  
