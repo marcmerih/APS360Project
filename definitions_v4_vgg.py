@@ -63,9 +63,9 @@ class Model(nn.Module):
         self.output_vgg16_conv = self.model_vgg16_conv(self.input)
         self.pool = nn.MaxPool2d(2, 2)
         self.x1 = Flatten(name='flatten')(output_vgg16_conv)
-        self.x2 = Dense(4096, activation='relu', name='fc1')(x)
-        self.x3 = Dense(4096, activation='relu', name='fc2')(x)
-        self.x4 = Dense(2, activation='softmax', name='predictions')(x)
+        self.x2 = Dense(4096, activation='relu', name='x2')(self.x1)
+        self.x3 = Dense(4096, activation='relu', name='x3')(self.x2)
+        self.x4 = Dense(2, activation='softmax', name='predictions')(self.x3)
 
 
     def forward(self, x):
