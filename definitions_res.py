@@ -83,12 +83,12 @@ class ResNet(nn.Module):
         self.fc1 = nn.Linear( 2768896,1000)
         self.fc2 = nn.Linear(1000, 2)
 
-
     def forward(self, x):
         x = x.view(-1, 2768896)
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
         return x
+
 
 
 #-------------------Train Loop (Ft. Get Accuracy & Plotting)----------------------------------------
@@ -102,7 +102,7 @@ def get_accuracy(model,set_):
 
     label = torch.tensor(label_).cuda()
 
-
+    model = model.cuda()
     trainSet_,valSet_,__ = get_data_loader(150)
     if set_ == "train":
         data_ = trainSet_
