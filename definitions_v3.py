@@ -137,7 +137,6 @@ def LPFilter(img):
     weights3=weights3.unsqueeze(dim=0).cuda()
     filteredimgs = F.conv2d(img, weights3, padding=2).cuda()
     return filteredimgs
-    return filteredimgs.cuda()
 
 #-------------------Train Loop (Ft. Get Accuracy & Plotting)----------------------------------------
         
