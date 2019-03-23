@@ -59,7 +59,7 @@ class Model(nn.Module):
         self.name = "Base"
         self.input_size = Input(shape=(3,600,600),name = 'image_input')
         model_vgg16_conv = VGG16(weights='imagenet', include_top=False)
-        output_vgg16_conv = self.model_vgg16_conv(input)
+        output_vgg16_conv = self.model_vgg16_conv(input_size)
         self.pool = nn.MaxPool2d(2, 2)
         self.x1 = Flatten(name='flatten')(output_vgg16_conv)
         self.x2 = Dense(4096, activation='relu', name='fc1')(x)
