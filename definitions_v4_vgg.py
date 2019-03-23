@@ -87,6 +87,18 @@ class Model(nn.Module):
         print(type(x))
         return x
 
+class VGG(nn.Module):
+    def __init__(self):
+        super(VGG, self).__init__()
+        self.layer1 = nn.Linear(256*6*6, 50)
+        self.layer2 = nn.Linear(50, 20)
+        self.layer3 = nn.Linear(20, 9)
+    def forward(self, img):
+        flattened = img.view(-1,256*6*6)
+        activation1 = F.relu(self.layer1(flattened))
+        activation2 = F.relu(self.layer2(activation1))
+        output = self.layer3(activation2)
+        return output
 
 #-------------------Train Loop (Ft. Get Accuracy & Plotting)----------------------------------------
 
@@ -156,7 +168,8 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
             img,batch=img.cuda(),batch.cuda()
             b = torch.split(img,600,dim=3)
 
-
+            vgg = d.Model(img)
+            print(vgg.shape)
             img = torch.cat(b, 0)
 
          #   print(label)
