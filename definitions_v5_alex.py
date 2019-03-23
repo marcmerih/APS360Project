@@ -182,7 +182,7 @@ def plot(iterations,train_acc, val_acc):
 
 from a3code import AlexNetFeatures
 myfeature_model = AlexNetFeatures() #loads pre-trained weights
-atrain_loader, aval_loader, atest_loader = get_data_loader(1)
+atrain_loader, aval_loader = get_data_loader(1)
 a=0
 for img, l in atest_loader:
     features=myfeature_model(img)
@@ -218,29 +218,10 @@ def get_alex_data_loader(batch_size, shuffle=True):
     return alex_train_loader, alex_train_loader#, alex_test_loader
 
 
-def get_alex_accuracy(model, train=True):
-    batch_size=16
-    label_ = [0]*(batch_size*2)
-    for i in range(0,batch_size*2,2):
-        label_[i] = 1
-
-    if train:
-        data = alex_train_loader
-    else:
-        train, data, test = alex_train_loader, alex_val_loader = get_alex_data_loader(1)
-
-    correct = 0
-    total = 0
-    for inputs, labels in data:
-        output = model(inputs) # We don't need to run F.softmax
-        pred = output.argmax()
-        correct += pred.eq(labels.view_as(pred)).sum().item()
-        total += inputs.shape[0]
-    return correct / total
 
 def alextrain(model, batch_size=32, num_epochs=15, lr=0.0001):
 
-    atrain_loader, aval_loader, atest_loader = get_alex_data_loader(1)
+    atrain_loader, aval_loader = get_alex_data_loader(1)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9)
 
