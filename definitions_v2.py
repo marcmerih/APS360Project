@@ -144,8 +144,10 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
                 convolve = np.transpose(convolve, [1,2,0])
                 print(convolve.shape)
                 result=ndimage.convolve(convolve, np.atleast_3d(weights))
+                result = np.transpose(result, [1,2,0])
                 filteredimg.append(result)
-            print(filteredimg.shape)
+                print(result.shape)
+            print(len(filteredimg.size)_
          
         
             if(len(batch)!=batch_size): 
