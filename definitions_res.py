@@ -125,7 +125,7 @@ def get_accuracy(model,set_,batch_size):
             pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
             correct += pred.eq(label.view_as(pred)).sum().item() #compute how many predictions were correct
             total += img.shape[0] #get the total ammount of predictions
-            
+            break
     
     return correct / total
 
@@ -177,9 +177,9 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
                 #print("Iteration Done")
             
         # Calculate the statistics
-        train_acc.append(get_accuracy(mdl,"train",batch_size))
+        train_acc.append(get_accuracy(mdl,"train",batch_size = 150))
     
-        val_acc.append(get_accuracy(mdl,"val"),batch_size)  # compute validation accuracy
+        val_acc.append(get_accuracy(mdl,"val",batch_size = 150))  # compute validation accuracy
         n += 1
     
     
