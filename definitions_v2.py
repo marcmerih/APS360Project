@@ -147,7 +147,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
                 result = np.transpose(result, [1,2,0])
                 filteredimg.append(result)
                 print(result.shape)
-            print(len(filteredimg.size)_
+            print(len(filteredimg))
          
         
             if(len(batch)!=batch_size): 
