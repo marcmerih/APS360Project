@@ -141,7 +141,7 @@ def get_accuracy(model,set_, batch_size):
 
 def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
     mdl.cuda()
-    print(mdl.parameters())
+    #print(mdl.parameters())
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(mdl.parameters(), lr=learning_rate, momentum=0.9)
     trainSet,valSet = get_data_loader(batch_size)
@@ -163,16 +163,14 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
         itera = 0
         filteredimg=[]
         for img,batch in iter(trainSet):
-
+            #img, batch = img.cuda(), batch.cuda()
             if(len(batch)!=batch_size):
                 break
             img,batch=img.cuda(),batch.cuda()
             b = torch.split(img,600,dim=3)
 
-            vgg = Model(img)
-
             img = torch.cat(b, 0)
-
+            vgg = Model(img)
          #   print(label)
 
             itera += batch_size*2
