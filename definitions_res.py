@@ -23,7 +23,7 @@ import time as t
 import torch.optim as optim
 from PIL import Image, ImageOps
 
-from resnet import * as
+from resnet import * 
 
 
 import torchvision.models as models
