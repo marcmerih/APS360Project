@@ -168,7 +168,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
             img,batch=img.cuda(),batch.cuda()
             b = torch.split(img,600,dim=3)
 
-            vgg = d.Model(img)
+            vgg = Model(img)
             print(vgg.shape)
             img = torch.cat(b, 0)
 
