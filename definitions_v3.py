@@ -131,7 +131,7 @@ def LPFilter(img):
                         [0.,0.,0.,0.,0.]])
     weights2_m3=1/2*weights2_m3
     weights=np.dot(weights2_m1, weights2_m2, weights2_m3)
-    weights=torch.tensor(weights)
+    weights=torch.from_numpy(weights)
     weights3=[weights,weights,weights]
     weights3=torch.stack(weights3)
     weights3=weights3.unsqueeze(dim=0).cuda()
