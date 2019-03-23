@@ -11,6 +11,6 @@ import pickle
 
 
 modelBase = d.BaseModel(input_size = 600)
-iterations,train_acc = d.train(mdl = modelBase,epochs = 40,batch_size = 16, learning_rate =0.001) #,val_acc
+iterations,train_acc = d.train(mdl = modelBase,epochs = 40,batch_size = 16, learning_rate =0.0003) #,val_acc
 #d.plot(iterations,train_acc, val_acc)
 
