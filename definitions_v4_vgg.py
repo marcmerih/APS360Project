@@ -72,21 +72,21 @@ class Model(nn.Module):
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(model_vgg16_conv)))
-        print(type(x))
+        #print(type(x))
         x = self.pool(F.relu(self.conv2(output_vgg16_conv)))
-        print(type(x))
-        x = x.view(-1,int(7 * 147 * 147) )
-        print(type(x))
+        #print(type(x))
+        #x = x.view(-1,int(7 * 147 * 147) )
+        #print(type(x))
         x = self.x1(x)
-        print(type(x))
+        #print(type(x))
         x = self.x2(x)
-        print(type(x))
+        #print(type(x))
         x = self.x3(x)
-        print(type(x))
+        #print(type(x))
         x = self.x4(x)
-        print(type(x))
+        #print(type(x))
         x = x.squeeze(1) # Flatten to [batch_size]
-        print(type(x))
+        #print(type(x))
         return x
 
 class VGG(nn.Module):
@@ -96,7 +96,7 @@ class VGG(nn.Module):
         self.layer2 = nn.Linear(5000, 200)
         self.layer3 = nn.Linear(200, 2)
     def forward(self, img):
-        flattened = img.view(-1,36928)
+        #flattened = img.view(-1,36928)
         activation1 = F.relu(self.layer1(flattened))
         activation2 = F.relu(self.layer2(activation1))
         output = self.layer3(activation2)
