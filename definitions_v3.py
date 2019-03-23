@@ -173,8 +173,6 @@ def get_accuracy(mdl,set_, batch_size):
             pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
             correct += pred.eq(label.view_as(pred)).sum().item() #compute how many predictions were correct
             total += img.shape[0] #get the total ammount of predictions
-            print('img shape',img.shape)
-            print('img[0] shape',img.shape[0])
         
     return correct / total
         
