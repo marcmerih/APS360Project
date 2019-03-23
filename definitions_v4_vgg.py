@@ -99,11 +99,11 @@ def get_data_loader(batch_size):
 class VGG(nn.Module):
     def __init__(self):
         super(VGG, self).__init__()
-        self.layer1 = nn.Linear(36928, 5000)
+        self.layer1 = nn.Linear(3*600*600, 5000)
         self.layer2 = nn.Linear(5000, 200)
         self.layer3 = nn.Linear(200, 2)
     def forward(self, img):
-        #flattened = img.view(-1,36928)
+        flattened = img.view(-1,3*600*600)
         activation1 = F.relu(self.layer1(img))
         activation2 = F.relu(self.layer2(activation1))
         output = self.layer3(activation2)
