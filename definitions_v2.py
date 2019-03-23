@@ -2,7 +2,7 @@
 """
 Created on Tue Mar 12 12:53:53 2019
 
-@author: chris
+@author: ita
 """
 #----------------------Imports------------------------------
 
@@ -68,8 +68,27 @@ class BaseModel(nn.Module):
         x = self.fc2(x)
         x = x.squeeze(1) # Flatten to [batch_size]
         return x
-    
-    
+
+#-------------------Filter (HP)----------------------------------------
+
+def HPFilter(img):
+    weights = torch.tensor([[-1.,2.,-2.,2.,-1.],
+                       [2.,-6.,8.,-6.,2.],
+                       [-2.,8.,-12.,8.,-2.],
+                       [2.,-6.,8.,-6.,2.],
+                       [-1.,2.,-2.,2.,1.]])
+    filteredimgs=[]
+    for im in img:
+        im=np.transpose(im,[1,2,0])
+        im=im/2+0.5
+        im = im.squeeze()
+        result=ndimage.convolve(im, np.atleast_3d(weights))
+        result = torch.from_numpy(result)
+        result=np.transpose(result,[2,0,1])
+        filteredimgs.append(result)
+    filteredimgs = torch.stack(filteredimgs)
+    return filteredimgs
+
 #-------------------Train Loop (Ft. Get Accuracy & Plotting)----------------------------------------
         
 
@@ -97,7 +116,8 @@ def get_accuracy(model,set_, batch_size):
                 
             b = torch.split(img,600,dim=3) 
             img = torch.cat(b, 0)
-
+            filteredimgs=HPFilter(img)
+            out = mdl(filteredimgs)
             output = model(img).cuda()
       
             pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
@@ -136,15 +156,13 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
                 break
             img,batch=img.cuda(),batch.cuda()
             b = torch.split(img,600,dim=3) 
-            
-            
             img = torch.cat(b, 0)
             
          #   print(label)
             
             itera += batch_size*2
-            
-            out = mdl(img)
+            filteredimgs=HPFilter(img)
+            out = mdl(filteredimgs)
 
             loss = criterion(out, label)  
             loss.backward() 
