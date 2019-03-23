@@ -28,7 +28,7 @@ from resnet import *
 
 
 import torchvision.models as models
-resnet101 = resnet101(pretrained=True)
+resnet18 = resnet18(pretrained=True)
 
 #--------------------Data Loading and Splitting ---------------------------------
 def get_data_loader(batch_size):
@@ -156,13 +156,13 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
             b = torch.split(img,600,dim=3)
 
 
-            img = torch.cat(b, 0)
+            img = torch.cat(b, 0).cuda()
 
             print(img.size())
 
 
             itera += batch_size*2
-            res = resnet101(img)
+            res = resnet18(img)
             out = mdl(res)
 
             loss = criterion(out, label)
