@@ -28,7 +28,7 @@ from resnet import *
 
 
 import torchvision.models as models
-resnet18 = resnet18(pretrained=True).cuda()
+resnet18 = resnet18(pretrained=True)
 
 
 #--------------------Data Loading and Splitting ---------------------------------
@@ -139,8 +139,12 @@ def train(mdl,epochs= 20,batch_size = 16,learning_rate =0.01):
     train_acc, val_acc = [], []
     n = 0 # the number of iterations
 
-    label_ = [0]*(batch_size)
-    label_.extend([1]*(batch_size))
+    #label_ = [0]*(batch_size)
+    #label_.extend([1]*(batch_size))
+    
+    label_ = [0]*(batch_size*2)
+    for i in range(0,batch_size*2,2):
+        label_[i] = 1
 
 
     label = torch.tensor(label_).cuda()
@@ -157,7 +161,7 @@ def train(mdl,epochs= 20,batch_size = 16,learning_rate =0.01):
 
 
         for res,batch in iter(trainSet):
-
+            print(res.size(),batch.size())
             if len(batch)==batch_size:
                 
                # b = torch.split(img,600,dim=3)
@@ -212,35 +216,36 @@ def plot(iterations,train_acc, val_acc):
     print("Final Validation Accuracy: {}".format(val_acc[-1]))
 
 
-RtrainSet,RvalSet = get_data_loader(1)
+#RtrainSet,RvalSet = get_data_loader(1)
 
 def RNFeatures(dataSet,type_):
-    data = dataSet
+    data_ = dataSet
     i = 0
     j= 0
 
-    for img, label in data:
+    for img, label in data_:
         b = torch.split(img,600,dim=3)
 
-        img = torch.cat(b, 0).cuda()
-        
+        img = torch.cat(b, 0)
+        print(img.size())
         output = resnet18(img)
         
 
 
         if type_ == 'train':
-            tensor_path = "tensor_set{1}_number{2}".format(type_,i)
+            tensor_path = "tensor_set{0}_number{1}".format(type_,i)
 
             torch.save(output,r'C:/Users/chris/OneDrive/Documents/GitHub/APS360Project/RtrainData/'+tensor_path)
             i+=1
         elif type_ == 'val':
-            tensor_path = "tensor_set{1}_number{2}".format(type_,j)
+            tensor_path = "tensor_set{0}_number{1}".format(type_,j)
 
-            torch.save(output,r'C:/Users/chris/OneDrive/Documents/GitHub/APS360Project/RtrainData/'+tensor_path)
+            torch.save(output,r'C:/Users/chris/OneDrive/Documents/GitHub/APS360Project/RvalData/'+tensor_path)
             j+=1
-
-RNFeatures(RtrainSet,'train')
-RNFeatures(RvalSet,'val')
+#print("Train")
+#RNFeatures(RtrainSet,'train')
+#print("Validation")
+#RNFeatures(RvalSet,'val')
 
 def get_RN_data_loader(batch_size):
 
@@ -251,7 +256,7 @@ def get_RN_data_loader(batch_size):
     trainSet = torchvision.datasets.DatasetFolder(root=train_path,loader = torch.load,extensions = list(['']))
     train_data_loader = torch.utils.data.DataLoader(trainSet, batch_size=batch_size, shuffle=True)
 
-    valSet = torchvision.datasets.DatasetFolder(root=train_path,loader = torch.load,extensions = list(['']))
+    valSet = torchvision.datasets.DatasetFolder(root=val_path,loader = torch.load,extensions = list(['']))
     val_data_loader = torch.utils.data.DataLoader(valSet, batch_size=batch_size, shuffle=True)
 
     #testSet = torchvision.datasets.DatasetFolder(root=test_path,loader = torch.load,extensions = list(['']))
@@ -259,4 +264,4 @@ def get_RN_data_loader(batch_size):
    
     return train_data_loader ,val_data_loader
 
-RtrainSet,RvalSet = get_Alex_data_loader(16)
+#RtrainSet,RvalSet = get_RN_data_loader(16)
