@@ -35,7 +35,7 @@ resnet18 = resnet18(pretrained=True).cuda()
 def get_data_loader(batch_size):
 
     train_path = r'trainData'
-    #val_path = r'valData'
+    val_path = r'valData'
     #test_path = r'testData'
 
     transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
@@ -43,12 +43,12 @@ def get_data_loader(batch_size):
     trainSet = torchvision.datasets.ImageFolder(root=train_path, transform=transform)
     train_data_loader = torch.utils.data.DataLoader(trainSet, batch_size=batch_size, shuffle=True)
 
-    #valSet = torchvision.datasets.ImageFolder(root=val_path, transform=transform)
-    #val_data_loader = torch.utils.data.DataLoader(valSet, batch_size=batch_size, shuffle=True)
+    valSet = torchvision.datasets.ImageFolder(root=val_path, transform=transform)
+    val_data_loader = torch.utils.data.DataLoader(valSet, batch_size=batch_size, shuffle=True)
 
     #testSet = torchvision.datasets.ImageFolder(root=test_path, transform=transform)
     #test_data_loader  = torch.utils.data.DataLoader(testSet, batch_size=batch_size, shuffle=True)
-    return train_data_loader #, val_data_loader, #test_data_loader
+    return train_data_loader , val_data_loader #test_data_loader
 
 
 
@@ -108,8 +108,8 @@ def get_accuracy(model,set_,batch_size):
     
     if set_ == "train":
         data_ = trainSet_
-    #elif set_ == "val":
-        #data_ = valSet_
+    elif set_ == "val":
+        data_ = valSet_
 
 
     correct = 0
@@ -134,7 +134,7 @@ def get_accuracy(model,set_,batch_size):
 def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(mdl.parameters(), lr=learning_rate, momentum=0.9)
-    trainSet = get_data_loader(batch_size)
+    trainSet,valSet = get_data_loader(batch_size)
     train_acc, val_acc = [], []
     n = 0 # the number of iterations
 
@@ -176,36 +176,36 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
                 optimizer.zero_grad()
                 print("Iteration Done")
             
-            # Calculate the statistics
-            train_acc.append(get_accuracy(mdl,"train",batch_size))
+        # Calculate the statistics
+        train_acc.append(get_accuracy(mdl,"train",batch_size))
     
-            #val_acc.append(get_accuracy(mdl,"val"))  # compute validation accuracy
-            n += 1
+        val_acc.append(get_accuracy(mdl,"val"),batch_size)  # compute validation accuracy
+        n += 1
     
     
-            print("Epoch",n,"Done in:",t.time() - t1, "With Training Accuracy:",train_acc[-1])#, "And Validation Accuracy:",val_acc[-1])
+        print("Epoch",n,"Done in:",t.time() - t1, "With Training Accuracy:",train_acc[-1], "And Validation Accuracy:",val_acc[-1])
     
     
             # Save the current model (checkpoint) to a file
-            model_path = "model_{0}_bs{1}_lr{2}_epoch{3}".format(mdl.name,batch_size,learning_rate,epoch)
-            torch.save(mdl.state_dict(), model_path)
+           # model_path = "model_{0}_bs{1}_lr{2}_epoch{3}".format(mdl.name,batch_size,learning_rate,epoch)
+           # torch.save(mdl.state_dict(), model_path)
     
-        iterations = list(range(1,epochs + 1))
+    iterations = list(range(1,epochs + 1))
     
-        print("--------------Finished--------------")
+    print("--------------Finished--------------")
     
-        return iterations,train_acc, val_acc
+    return iterations,train_acc, val_acc
 
 
 
 def plot(iterations,train_acc, val_acc):
     plt.title("Training Curve")
     plt.plot(iterations, train_acc, label="Train")
-    #plt.plot(iterations, val_acc, label="Validation")
+    plt.plot(iterations, val_acc, label="Validation")
     plt.xlabel("Epochs")
     plt.ylabel("Training Accuracy")
     plt.legend(loc='best')
     plt.show()
 
     print("Final Training Accuracy: {}".format(train_acc[-1]))
-    #print("Final Validation Accuracy: {}".format(val_acc[-1]))
+    print("Final Validation Accuracy: {}".format(val_acc[-1]))
