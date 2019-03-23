@@ -104,7 +104,7 @@ def get_accuracy(model,set_,batch_size):
     label = torch.tensor(label_).cuda()
 
     model = model.cuda()
-    trainSet_,valSet_,__ = get_data_loader(batch_size)
+    trainSet_ = get_data_loader(batch_size)
     
     if set_ == "train":
         data_ = trainSet_
@@ -177,7 +177,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
                 print("Iteration Done")
             
             # Calculate the statistics
-            train_acc.append(get_accuracy(mdl,"train",batch_size)
+            train_acc.append(get_accuracy(mdl,"train",batch_size))
     
             #val_acc.append(get_accuracy(mdl,"val"))  # compute validation accuracy
             n += 1
