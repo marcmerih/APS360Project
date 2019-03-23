@@ -109,6 +109,35 @@ def HPFilter2(img):
     filteredimgs = torch.stack(filteredimgs)
     return filteredimgs.cuda()
 
+def LPFilter(img):
+    weights2_m1 = np.array([[0.,0.,0.,0.,0.],
+                        [0.,-1.,2.,-1.,0.], 
+                        [0.,2.,-4.,2.,0],
+                        [0.,-1.,2.,-1.,0.], 
+                        [0.,0.,0.,0.,0.]])
+    weights2_m1=1/4*weights2_m1
+
+    weights2_m2 = np.array([[-1.,2.,-2.,2.,-1],
+                        [2.,-6.,8.,-6.,2.], 
+                        [-2.,8.,-12.,8.,-2.],
+                        [2.,-6.,8.,-6.,2.], 
+                        [-1.,2.,-2.,2.,-1],])
+    weights2_m2=1/12*weights2_m2
+
+    weights2_m3 = np.array([[0.,0.,0.,0.,0.],
+                        [0.,0.,0.,0.,0.],
+                        [0.,1.,-2.,1.,0],
+                        [0.,0.,0.,0.,0.],
+                        [0.,0.,0.,0.,0.]])
+    weights2_m3=1/2*weights2_m3
+    weights=np.dot(weights2_m1, weights2_m2, weights2_m3)
+    weights=torch.tensor(weights)
+    weights3=[weights,weights,weights]
+    weights3=weights3.unsqueeze(dim=0).cuda()
+    filteredimgs = F.conv2d(img, weights3, padding=2).cuda()
+    return filteredimgs
+    return filteredimgs.cuda()
+
 #-------------------Train Loop (Ft. Get Accuracy & Plotting)----------------------------------------
         
 
