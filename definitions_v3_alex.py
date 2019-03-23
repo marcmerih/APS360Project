@@ -23,6 +23,11 @@ import time as t
 import torch.optim as optim
 from PIL import Image, ImageOps
 
+from resnet import * as
+
+
+import torchvision.models as models
+resnet101 = resnet.resnet101(pretrained=True)
 
 #--------------------Data Loading and Splitting ---------------------------------
 def get_data_loader(batch_size):
@@ -66,6 +71,21 @@ class BaseModel(nn.Module):
         x = self.fc1(x)
         x = self.fc2(x)
         x = x.squeeze(1) # Flatten to [batch_size]
+        return x
+
+
+
+class ResNet(nn.Module):
+    def __init__(self,):
+        super(ResNet, self).__init__()
+        self.name = "ResNet"
+        self.fc1 = nn.Linear( 256* 6 * 6, 32)
+        self.fc2 = nn.Linear(32, 9)
+
+    def forward(self, x):
+        x = x.view(-1, 256 * 6 * 6)
+        x = F.relu(self.fc1(x))
+        x = self.fc2(x)
         return x
 
 
@@ -130,6 +150,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
         itera = 0
         for img,_ in iter(trainSet):
 
+
             b = torch.split(img,600,dim=3)
 
 
@@ -139,7 +160,8 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
 
 
             itera += batch_size*2
-            out = mdl(img)
+            res = resnet(img)
+            out = mdl(res)
 
             loss = criterion(out, label)
             loss.backward()
