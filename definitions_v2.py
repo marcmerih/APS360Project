@@ -82,7 +82,7 @@ def HPFilter(img):
         im=np.transpose(im,[1,2,0])
         im=im/2+0.5
         im = im.squeeze()
-        result=ndimage.convolve(im.cpu(), np.atleast_3d(weights))
+        result=ndimage.convolve(im, np.atleast_3d(weights))
         result = torch.from_numpy(result)
         result=np.transpose(result,[2,0,1])
         filteredimgs.append(result)
@@ -162,8 +162,8 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
          #   print(label)
             
             itera += batch_size*2
-            filteredimgs=HPFilter(img)
-            out = mdl(filteredimgs)
+            filteredimgs=HPFilter(img).cuda()
+            out = mdl(filteredimgs).cuda()
 
             loss = criterion(out, label)  
             loss.backward() 
