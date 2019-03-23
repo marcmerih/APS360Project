@@ -145,6 +145,8 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
                 print(convolve.shape)
                 result=ndimage.convolve(convolve, np.atleast_3d(weights))
                 filteredimg.append(result)
+            print(filteredimg.shape)
+         
         
             if(len(batch)!=batch_size): 
                 break
