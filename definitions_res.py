@@ -104,7 +104,7 @@ def get_accuracy(model,set_,batch_size):
     label = torch.tensor(label_).cuda()
 
     model = model.cuda()
-    trainSet_ = get_data_loader(batch_size)
+    trainSet_,valSet_ = get_data_loader(batch_size)
     
     if set_ == "train":
         data_ = trainSet_
@@ -127,7 +127,7 @@ def get_accuracy(model,set_,batch_size):
             total += img.shape[0] #get the total ammount of predictions
             
     
-        return correct / total
+    return correct / total
 
 
 
