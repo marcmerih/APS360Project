@@ -94,6 +94,7 @@ def HPFilter(img):
 
 
 def get_accuracy(model,set_, batch_size):
+    mdl.cuda()
     batch_size=16
     label_ = [0]*(batch_size*2)
     for i in range(batch_size,batch_size*2):
