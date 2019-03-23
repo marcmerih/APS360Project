@@ -154,14 +154,14 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
             
             if(len(batch)!=batch_size): 
                 break
-            img,batch=img.cuda(),batch.cuda()
+            img,batch=img,batch.cuda()
             b = torch.split(img,600,dim=3) 
             img = torch.cat(b, 0)
             
          #   print(label)
             
             itera += batch_size*2
-            filteredimgs=HPFilter(img).cuda()
+            filteredimgs=HPFilter(img)
             out = mdl(filteredimgs)
 
             loss = criterion(out, label)  
