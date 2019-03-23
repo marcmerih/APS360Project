@@ -21,7 +21,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time as t
 import torch.optim as optim
-import scipy
+import scipy.ndimage
 from PIL import Image, ImageOps
 
 
@@ -143,7 +143,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
                 convolve=i.squeeze()
                 convolve = np.transpose(convolve, [1,2,0])
                 print(convolve.shape)
-                result=scipy.ndimage.convolve(convolve, np.atleast_3d(weights))
+                result=ndimage.convolve(convolve, np.atleast_3d(weights))
                 filteredimg.append(result)
         
             if(len(batch)!=batch_size): 
