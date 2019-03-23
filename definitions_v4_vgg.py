@@ -53,9 +53,9 @@ def get_data_loader(batch_size):
 
 #--------------------Base Model----------------------------------------------------
 
-class VGGModel(nn.Module):
+class Model(nn.Module):
     def __init__(self, input_size):
-        super(VGGModel, self).__init__()
+        super(Model, self).__init__()
         self.name = "Base"
         self.input_size = Input(shape=(3,600,600),name = 'image_input')
         model_vgg16_conv = VGG16(weights='imagenet', include_top=False)
