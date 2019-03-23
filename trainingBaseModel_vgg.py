@@ -9,6 +9,6 @@ import numpy as np
 import pickle
 
 
-model = d.Model()
+model = d.Model(input_size = 600)
 iterations,train_acc, val_acc = d.train(mdl = model,epochs = 10,batch_size = 32)
 d.plot(iterations,train_acc, val_acc)
