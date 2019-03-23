@@ -174,7 +174,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
     
                 optimizer.step()
                 optimizer.zero_grad()
-                print("Iteration Done")
+                #print("Iteration Done")
             
         # Calculate the statistics
         train_acc.append(get_accuracy(mdl,"train",batch_size))
