@@ -59,7 +59,7 @@ class Model(nn.Module):
         self.name = "Base"
         self.input= Input(shape=(3,input_size,input_size),name = 'image_input')
         self.model_vgg16_conv = VGG16(weights='imagenet', include_top=False)
-        model_vgg16_conv.summary()
+        self.model_vgg16_conv.summary()
         self.output_vgg16_conv = self.model_vgg16_conv(self.input)
         self.pool = nn.MaxPool2d(2, 2)
         self.x1 = Flatten(name='flatten')(output_vgg16_conv)
