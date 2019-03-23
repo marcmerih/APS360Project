@@ -69,7 +69,7 @@ alexNet = tvm.alexnet(pretrained=True)
 myfeature_model = AlexNetFeatures()
 
 def get_accuracy(model,set_, batch_size):
-    batch_size=16
+    batch_size=32
     label_ = [0]*(batch_size*2)
     for i in range(batch_size,batch_size*2):
         label_[i] = 1
