@@ -55,10 +55,11 @@ def get_data_loader(batch_size):
 #--------------------Base Model----------------------------------------------------
 
 class Model(nn.Module):
-    def __init__(self, 600):
+    def __init__(self, input_size):
         super(Model, self).__init__()
+        self.input_size = 600
         self.name = "Base"
-        self.input= Input(shape=(600,600,3),name = 'image_input')
+        self.input= Input(shape=(self.input_size,self.input_size,3),name = 'image_input')
         self.model_vgg16_conv = VGG16(weights='imagenet', include_top=False)
         self.model_vgg16_conv.summary()
         self.output_vgg16_conv = self.model_vgg16_conv(self.input)
