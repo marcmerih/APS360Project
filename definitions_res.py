@@ -88,7 +88,7 @@ class ResNet(nn.Module):
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
         return x
-\
+
 
 
 #-------------------Train Loop (Ft. Get Accuracy & Plotting)----------------------------------------
@@ -102,7 +102,7 @@ def get_accuracy(model,set_):
 
     label = torch.tensor(label_).cuda()
 
-
+    model = model.cuda()
     trainSet_,valSet_,__ = get_data_loader(150)
     if set_ == "train":
         data_ = trainSet_
@@ -164,9 +164,9 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.01):
 
             itera += batch_size*2
 
-            res = resnet18(img).cuda()
+            res = resnet18(img)
             print(res.size())
-            out = mdl(res).cuda()
+            out = mdl(res)
 
 
             loss = criterion(out, label)
