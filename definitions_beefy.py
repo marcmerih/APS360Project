@@ -57,10 +57,12 @@ class BaseModel(nn.Module):
         self.conv2 = nn.Conv2d(5, 7, 5)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv3 = nn.Conv2d(7,10,3)
-        self.fc1 = nn.Linear(int(10 * 122 * 122), 15000)
-        self.fc2 = nn.Linear(15000,1000)
-        self.fc3 = nn.Linear(1000,2)
-
+        self.conv4 = nn.Conv2d(10, 12, 6)
+        self.fc1 = nn.Linear(int(12 * 140 * 140), 30000)
+        self.fc2 = nn.Linear(30000,10000)
+        self.fc3 = nn.Linear(10000,1000)
+        self.fc4 = nn.Linear(1000,100)
+        self.fc5 = nn.Linear(100,2)
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
@@ -68,11 +70,13 @@ class BaseModel(nn.Module):
         x = F.relu(self.conv2(x))
         x = self.pool(x)
         x = F.relu(self.conv3(x))
-        x = self.pool(x)
-        x = x.view(-1,int(10*122*122))
+        x = F.relu(self.conv4(x))
+        x = x.view(-1,int(10*77*77))
         x = self.fc1(x)
         x = self.fc2(x)
         x = self.fc3(x)
+        x = self.fc4(x)
+        x = self.fc5(x)
         x = x.squeeze(1) # Flatten to [batch_size]
         return x
 
