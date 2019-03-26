@@ -26,7 +26,7 @@ from PIL import Image, ImageOps
 
 from resnet import *
 import grid_search as gd
-
+import pickle
 
 import torchvision.models as models
 resnet18 = resnet18(pretrained=True)
@@ -313,10 +313,10 @@ def RNFeatures(dataSet,type_):
 
 def get_RN_data_loader(batch_size):
 
-    #train_path = r'RtrainData'
-    #val_path = r'RvalData'
-    train_path = r'C:/Users/chris/OneDrive/Documents/GitHub/APS360Project/RtrainData'
-    val_path = r'C:/Users/chris/OneDrive/Documents/GitHub/APS360Project/RvalData'
+    train_path = r'RtrainData'
+    val_path = r'RvalData'
+    #train_path = r'C:/Users/chris/OneDrive/Documents/GitHub/APS360Project/RtrainData'
+    #val_path = r'C:/Users/chris/OneDrive/Documents/GitHub/APS360Project/RvalData'
 
 
     trainSet = torchvision.datasets.DatasetFolder(root=train_path,loader = torch.load,extensions = list(['']))
@@ -390,7 +390,7 @@ learningRates = [0.01,0.001,0.0001,0.00005]
 weightDecay = [0,0.01,0.001,0.0001]
 dropouts = [0, 0.1, 0.2, 0.3, 0.4, 0.5]
 epochs = [10,20,30,40,50,100]
-layers = [gd.ResNet6,gd.ResNet4,gd.ResNet5]
+layers = [gd.ResNet4,gd.ResNet5,gd.ResNet6]
 batchSize = [16,32]
 
 models = []
@@ -411,3 +411,10 @@ for lr in learningRates:
 
                         print(val_acc)
                         valAcc.append(val_acc)
+pickle_out = open("models.pickle","wb")
+pickle.dump(models, pickle_out)
+pickle_out.close()
+
+pickle_out = open("valAcc.pickle","wb")
+pickle.dump(valAcc, pickle_out)
+pickle_out.close()
