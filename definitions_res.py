@@ -347,15 +347,15 @@ def grid_train(model,ep,lr,wd,dp,l,bs):
        label_[i] = 1
 
 
-   label = torch.tensor(label_)
+   label = torch.tensor(label_).cuda()
     #mdl = mdl.cuda()
 
    print("--------------Starting--------------")
 
    for epoch in range(ep):  # loop over the dataset multiple times
-
+       
        for res,batch in iter(trainSet):
-
+           res = res.cuda()
            if len(batch)==bs:
                res = res.view(-1, 86528)
 
@@ -405,7 +405,7 @@ for lr in learningRates:
                     for bs in batchSize:
                         mdl = l
                         print("EP {} , LR {} , WD {} , DP {}, L {}, BS {}".format(ep,lr,wd,dp,l,bs))
-                        model = l(dp)
+                        model = l(dp).cuda()
                         models.append(("EP {} , LR {} , WD {} , DP {}, L {} ".format(ep,lr,wd,dp,l,bs)))
                         val_acc = grid_train(model,ep,lr,wd,dp,l,bs)
 
