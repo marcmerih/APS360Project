@@ -25,6 +25,7 @@ import torch.optim as optim
 from PIL import Image, ImageOps
 
 from resnet import *
+import grid_search as gd
 
 
 import torchvision.models as models
@@ -98,6 +99,7 @@ class ResNet(nn.Module):
         #x = x.squeeze(1)
         #print(x.size(),"\n\n\n")
         return x
+
 
 
 
@@ -216,7 +218,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.001):
             if len(batch)==batch_size:
 
                 res = res.view(-1, 86528)
-                
+                '''
                 res = res.cpu().detach().numpy()
                 label = label.cpu().detach().numpy()
                 #print(res,label)
@@ -224,7 +226,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.001):
                 #print(res,label)
                 res = torch.tensor(res)
                 label = torch.tensor(label)
-                
+                '''
                 #print(res.size(),batch.size())
                 #x = torch.squeeze(res,1)
                 #print(res)
@@ -328,4 +330,95 @@ def get_RN_data_loader(batch_size):
    
     return train_data_loader ,val_data_loader
 
-RtrainSet,RvalSet = get_RN_data_loader(16)
+#RtrainSet,RvalSet = get_RN_data_loader(16)
+
+
+
+
+def grid_train(model,ep,lr,wd,dp,l,bs):
+
+
+   criterion = nn.CrossEntropyLoss()
+   optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.9,weight_decay = wd)
+   trainSet,valSet = get_RN_data_loader(bs)
+   val_acc = []
+   label_ = [0]*(bs*2)
+   for i in range(1,bs*2,2):
+       label_[i] = 1
+       
+       
+   label = torch.tensor(label_)
+    #mdl = mdl.cuda()
+    
+   print("--------------Starting--------------")
+
+   for epoch in range(ep):  # loop over the dataset multiple times
+       
+       for res,batch in iter(trainSet):
+
+           if len(batch)==bs:
+               res = res.view(-1, 86528)
+                
+               out = model(res)
+               loss = criterion(out, label)
+               loss.backward()
+               optimizer.step()
+               optimizer.zero_grad()
+
+       val_acc.append(get_accuracy(model,"val",batch_size = 155))
+       print("--------------Finished--------------")
+    
+    
+        #print("Epoch",n,"Done in:",t.time() - t1, "With Training Accuracy:",train_acc[-1], "And Validation Accuracy:",val_acc[-1])
+    
+    
+        #Save the current model (checkpoint) to a file
+            #model_path = "model_{0}_bs{1}_lr{2}_epoch{3}".format(mdl.name,batch_size,learning_rate,epoch)
+           # torch.save(mdl.state_dict(), model_path)
+    
+    
+  
+    
+   return max(val_acc)
+        
+        
+        
+
+
+
+learningRates = [0.01,0.001,0.0001,0.00005]
+weightDecay = [0,0.01,0.001,0.0001]
+dropouts = [0, 0.1, 0.2, 0.3, 0.4, 0.5]
+epochs = [10,20,30,40,50,100]
+layers = [gd.ResNet6,gd.ResNet4,gd.ResNet5]
+batchSize = [16,32]
+
+models = []
+valAcc = []
+
+
+for lr in learningRates:
+    for wd in weightDecay:
+        for dp in dropouts:
+            for ep in epochs:
+                for l in layers:
+                    for bs in batchSize:
+                        mdl = l
+                        print("EP {} , LR {} , WD {} , DP {}, L {}, BS {}".format(ep,lr,wd,dp,l,bs))
+                        model = l(dp)
+                        models.append(("EP {} , LR {} , WD {} , DP {}, L {} ".format(ep,lr,wd,dp,l,bs)))
+                        val_acc = grid_train(model,ep,lr,wd,dp,l,bs)
+                        
+                        print(val_acc)
+                        valAcc.append(val_acc)
+                        
+                        
+                        
+                    
+
+
+
+
+
+
+
