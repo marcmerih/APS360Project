@@ -157,7 +157,7 @@ def get_accuracy(model,set_,batch_size):
         label_[i] = 1
 
 
-    label = torch.tensor(label_)
+    label = torch.tensor(label_).cuda()
 
     trainSet_,valSet_ = get_RN_data_loader(batch_size)
     if set_ == "train":
@@ -165,13 +165,13 @@ def get_accuracy(model,set_,batch_size):
     elif set_ == "val":
         data_ = valSet_
 
-
+    model = model.cuda()
     correct = 0
     total = 0
     for res, batch in data_:
      #   b = torch.split(img,600,dim=3)
       #  img = torch.cat(b, 0)
-
+        res = res.cuda()
         res = res.view(-1, 86528)
         output = model(res)
         pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
