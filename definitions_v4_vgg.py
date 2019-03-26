@@ -28,6 +28,14 @@ from keras.applications.vgg16 import preprocess_input
 from keras.layers import Input, Flatten, Dense
 from keras.models import Model
 import numpy as np
+from keras.applications.vgg19 import VGG19
+from keras.preprocessing import image
+from keras.applications.vgg19 import preprocess_input
+from keras.models import Model
+import numpy as np
+
+base_model = VGG19(weights='imagenet')
+model = Model(inputs=base_model.input, outputs=base_model.get_layer('block4_pool').output)
 
 
 #--------------------Data Loading and Splitting ---------------------------------
@@ -35,7 +43,7 @@ def get_data_loader(batch_size):
 
     train_path = r'trainData'
     val_path = r'valData'
-    test_path = r'testData'
+    #test_path = r'testData'
 
     transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
@@ -45,23 +53,24 @@ def get_data_loader(batch_size):
     valSet = torchvision.datasets.ImageFolder(root=val_path, transform=transform)
     val_data_loader = torch.utils.data.DataLoader(valSet, batch_size=batch_size, shuffle=True)
 
-    testSet = torchvision.datasets.ImageFolder(root=test_path, transform=transform)
-    test_data_loader  = torch.utils.data.DataLoader(testSet, batch_size=batch_size, shuffle=True)
-    return train_data_loader , val_data_loader, test_data_loader
+    #testSet = torchvision.datasets.ImageFolder(root=test_path, transform=transform)
+    #test_data_loader  = torch.utils.data.DataLoader(testSet, batch_size=batch_size, shuffle=True)
+    return train_data_loader , val_data_loader#, test_data_loader
 
 
 
 #--------------------Base Model----------------------------------------------------
 
-class Model(nn.Module):
+#class Model(nn.Module):
     def __init__(self, input_size):
         super(Model, self).__init__()
+        self.input_size = 600
         self.name = "Base"
-        self.input= Input(shape=(input_size,input_size,3),name = 'image_input')
+        self.input= Input(shape=(self.input_size,self.input_size,3),name = 'image_input')
         self.model_vgg16_conv = VGG16(weights='imagenet', include_top=False)
-        self.model_vgg16_conv.summary()
+        #self.model_vgg16_conv.summary()
         self.output_vgg16_conv = self.model_vgg16_conv(self.input)
-        self.pool = nn.MaxPool2d(2, 2)
+        #self.pool = nn.MaxPool2d(2, 2)
         self.x1 = Flatten(name='flatten')(self.output_vgg16_conv)
         self.x2 = Dense(4096, activation='relu', name='x2')(self.x1)
         self.x3 = Dense(4096, activation='relu', name='x3')(self.x2)
@@ -70,26 +79,37 @@ class Model(nn.Module):
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(model_vgg16_conv)))
-        print(type(x))
+        #print(type(x))
         x = self.pool(F.relu(self.conv2(output_vgg16_conv)))
-        print(type(x))
-        x = x.view(-1,int(7 * 147 * 147) )
-        print(type(x))
+        #print(type(x))
+        #x = x.view(-1,int(7 * 147 * 147) )
+        #print(type(x))
         x = self.x1(x)
-        print(type(x))
+        #print(type(x))
         x = self.x2(x)
-        print(type(x))
+        #print(type(x))
         x = self.x3(x)
-        print(type(x))
+        #print(type(x))
         x = self.x4(x)
-        print(type(x))
+        #print(type(x))
         x = x.squeeze(1) # Flatten to [batch_size]
-        print(type(x))
+        #print(type(x))
         return x
 
+class VGG(nn.Module):
+    def __init__(self):
+        super(VGG, self).__init__()
+        self.layer1 = nn.Linear(3*600*600, 10000)
+        self.layer2 = nn.Linear(10000, 500)
+        self.layer3 = nn.Linear(500, 2)
+    def forward(self, img):
+        flattened = img.view(-1,3*600*600)
+        activation1 = F.relu(self.layer1(img))
+        activation2 = F.relu(self.layer2(activation1))
+        output = self.layer3(activation2)
+        return output
 
 #-------------------Train Loop (Ft. Get Accuracy & Plotting)----------------------------------------
-
 
 
 def get_accuracy(model,set_, batch_size):
@@ -128,6 +148,7 @@ def get_accuracy(model,set_, batch_size):
 
 def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
     mdl.cuda()
+    #print(mdl.parameters())
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(mdl.parameters(), lr=learning_rate, momentum=0.9)
     trainSet,valSet = get_data_loader(batch_size)
@@ -149,20 +170,20 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
         itera = 0
         filteredimg=[]
         for img,batch in iter(trainSet):
-
+            #img, batch = img.cuda(), batch.cuda()
             if(len(batch)!=batch_size):
                 break
             img,batch=img.cuda(),batch.cuda()
             b = torch.split(img,600,dim=3)
 
-
             img = torch.cat(b, 0)
-
+            vgg = model(img)
+            print(vgg.shape)
          #   print(label)
 
             itera += batch_size*2
 
-            out = mdl(img)
+            out = mdl(vgg)
 
             loss = criterion(out, label)
             loss.backward()

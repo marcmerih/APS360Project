@@ -15,12 +15,12 @@ class ResNet4(nn.Module):
         self.fc2 = nn.Linear( 300,100)
         self.fc3 = nn.Linear( 100,32)
         self.fc4 = nn.Linear(32, 2)
-        
+
         self.dropout1 = nn.Dropout(dropout)
         self.dropout2 = nn.Dropout(dropout)
         self.dropout3 = nn.Dropout(dropout)
-        
-        
+
+
 
     def forward(self, x):
         #print(x.size())
@@ -34,7 +34,7 @@ class ResNet4(nn.Module):
         #x = x.squeeze(1)
         #print(x.size(),"\n\n\n")
         return x
-    
+
 class ResNet5(nn.Module):
     def __init__(self,dropout):
         super(ResNet5, self).__init__()
@@ -44,13 +44,13 @@ class ResNet5(nn.Module):
         self.fc3 = nn.Linear(200,90)
         self.fc4 = nn.Linear(90, 32)
         self.fc5 = nn.Linear(32, 2)
-        
+
         self.dropout1 = nn.Dropout(dropout)
         self.dropout2 = nn.Dropout(dropout)
         self.dropout3 = nn.Dropout(dropout)
         self.dropout4 = nn.Dropout(dropout)
-        
-        
+
+
 
     def forward(self, x):
         #print(x.size())
@@ -65,7 +65,7 @@ class ResNet5(nn.Module):
         #x = x.squeeze(1)
         #print(x.size(),"\n\n\n")
         return x
-    
+
 class ResNet6(nn.Module):
     def __init__(self,dropout):
         super(ResNet6, self).__init__()
@@ -76,14 +76,14 @@ class ResNet6(nn.Module):
         self.fc4 = nn.Linear(120, 90)
         self.fc5 = nn.Linear(90, 32)
         self.fc6 = nn.Linear(32, 2)
-        
+
         self.dropout1 = nn.Dropout(dropout)
         self.dropout2 = nn.Dropout(dropout)
         self.dropout3 = nn.Dropout(dropout)
         self.dropout4 = nn.Dropout(dropout)
         self.dropout5 = nn.Dropout(dropout)
-        
-        
+
+
 
     def forward(self, x):
         #print(x.size())
