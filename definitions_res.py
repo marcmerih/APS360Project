@@ -350,7 +350,7 @@ def grid_train(model,ep,lr,wd,dp,l,bs):
    label = torch.tensor(label_).cuda()
     #mdl = mdl.cuda()
 
-   print("--------------Starting--------------")
+   #print("--------------Starting--------------")
 
    for epoch in range(ep):  # loop over the dataset multiple times
        
@@ -366,7 +366,7 @@ def grid_train(model,ep,lr,wd,dp,l,bs):
                optimizer.zero_grad()
 
        val_acc.append(get_accuracy(model,"val",batch_size = 155))
-       print("--------------Finished--------------")
+       #print("--------------Finished--------------")
 
 
         #print("Epoch",n,"Done in:",t.time() - t1, "With Training Accuracy:",train_acc[-1], "And Validation Accuracy:",val_acc[-1])
