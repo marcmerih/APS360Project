@@ -117,7 +117,7 @@ def get_accuracy(model,set_):
 
         res = resnet101(img)
         output = model(res)
-        pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
+        pred = output.max(0, keepdim=True)[1] # get the index of the max log-probability
         correct += pred.eq(label.view_as(pred)).sum().item() #compute how many predictions were correct
         total += img.shape[0] #get the total ammount of predictions
         break
