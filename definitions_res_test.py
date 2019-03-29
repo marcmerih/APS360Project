@@ -182,7 +182,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.001, weight_decay = 0.
         label_[i] = 1
 
 
-    label = torch.tensor(label_)#.type(torch.FloatTensor)
+    label = torch.tensor(label_).cuda()
     #mdl = mdl.cuda()
     print("--------------Starting--------------")
 
