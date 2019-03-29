@@ -153,8 +153,8 @@ def get_accuracy(model,set_,batch_size):
      #   b = torch.split(img,600,dim=3)
       #  img = torch.cat(b, 0)
         res = res.cuda()
-        res = res.view(-1, 86528)
-        output = model(res)
+        res = res.view(-1, 86528).cuda()
+        output = model(res).cuda()
         pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
         correct += pred.eq(label.view_as(pred)).sum().item() #compute how many predictions were correct
         total += res.shape[0] #get the total ammount of predictions
