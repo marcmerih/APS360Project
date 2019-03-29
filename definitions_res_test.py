@@ -114,55 +114,23 @@ class ResNet5(nn.Module):
         self.dropout2 = nn.Dropout(dropout)
         self.dropout3 = nn.Dropout(dropout)
         self.dropout4 = nn.Dropout(dropout)
+        
+    def forward(self, x):
+        #print(x.size())
+        #x = x.view(-1, 86528)
+        #print(x.size())
+        x = F.relu(self.dropout1(self.fc1(x)))
+        #print(x.size())
+        x = F.relu(self.dropout2(self.fc2(x)))
+        x = F.relu(self.dropout3(self.fc3(x)))
+        x = F.relu(self.dropout4(self.fc4(x)))
+        x = self.fc5(x)
+        #x = x.squeeze(1)
+        #print(x.size(),"\n\n\n")
+        return x
 
 
 #-------------------Train Loop (Ft. Get Accuracy & Plotting)----------------------------------------
-
-
-#
-#def get_accuracy(model,set_,batch_size):
-#   # label_ = [0]*(batch_size)
-#   # label_.extend([1]*(batch_size))
-#
-#    label_ = [0]*(batch_size*2)
-#    for i in range(1,batch_size*2,2):
-#        label_[i] = 1
-#
-#    label = torch.tensor(label_)#.type(torch.FloatTensor)
-#   # label = torch.tensor(label_).cuda()
-#
-#   # model = model.cuda()
-#    trainSet_,valSet_ = get_RN_data_loader(batch_size)
-#
-#    if set_ == "train":
-#        data_ = trainSet_
-#    elif set_ == "val":
-#        data_ = valSet_
-#
-#
-#    correct = 0
-#    total = 0
-#
-#    for res, batch in data_:
-##        res = res.view(-1, 86528)
-##        prob = torch.sigmoid(model(res))
-##        pred = (prob > 0.5).type(torch.FloatTensor)
-##        correct = (pred == label).type(torch.FloatTensor)
-##        break
-##    return float(torch.mean(correct))
-#
-#        if len(batch)==batch_size:
-#            res = res.view(-1, 86528)
-#            output = model(res)
-#
-#            pred = output.max(1, keepdim=True)[1]
-#                # get the index of the max log-probability
-#            correct += pred.eq(label.view_as(pred)).sum().item() #compute how many predictions were correct
-#            total += res.shape[0]*res.shape[1]
-#            #print(correct,res.shape[0]*res.shape[1])#get the total ammount of predictions
-#    #print(pred)
-#    #print("\n\n\n\n\n",label)
-#    return correct / total
 
 def get_accuracy(model,set_,batch_size):
     label_ = [0]*(batch_size*2)
