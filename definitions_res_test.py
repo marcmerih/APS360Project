@@ -98,7 +98,7 @@ class ResNet(nn.Module):
         x = self.fc4(x)
         #x = x.squeeze(1)
         #print(x.size(),"\n\n\n")
-        return x
+        return x.cuda()
 
 class ResNet5(nn.Module):
     def __init__(self,dropout):
