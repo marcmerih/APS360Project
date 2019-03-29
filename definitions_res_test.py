@@ -166,6 +166,7 @@ from sklearn.utils import shuffle
 
 def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.001, weight_decay = 0.001):
     #criterion = nn.BCEWithLogitsLoss()
+    mdl.cuda()
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(mdl.parameters(), lr=learning_rate, momentum=0.9, weight_decay=weight_decay)
     #trainSet,valSet = get_data_loader(batch_size)
@@ -188,35 +189,14 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.001, weight_decay = 0.
 
 
     for epoch in range(epochs):  # loop over the dataset multiple times
-
-
-
         t1 = t.time()
-
-
         for res,batch in iter(trainSet):
 
             if len(batch)==batch_size:
 
-                res = res.view(-1, 86528)
-                '''
-                res = res.cpu().detach().numpy()
-                label = label.cpu().detach().numpy()
-                #print(res,label)
-                res, label = shuffle(res, label, random_state=0)
-                #print(res,label)
-                res = torch.tensor(res)
-                label = torch.tensor(label)
-                '''
-                #print(res.size(),batch.size())
-                #x = torch.squeeze(res,1)
-                #print(res)
+                res = res.view(-1, 86528).cuda()
 
-                #res = torch.cat(b,0)
-                #print(x.shape)
-                #res = resnet18(img)
-
-                out = mdl(res)
+                out = mdl(res).cuda()
 
                 #print(out.size())
                 loss = criterion(out, label)
