@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Mar 12 12:53:53 2019
-
-@author: chris
+@author: ita
 """
 #----------------------Imports------------------------------
 
@@ -29,7 +28,7 @@ from PIL import Image, ImageOps
 def get_data_loader(batch_size):
 
     train_path = 'trainData'
-    val_path = 'trainData'
+    val_path = 'valData'
 #test_path = 'testData'
     
     transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
@@ -68,13 +67,81 @@ class BaseModel(nn.Module):
         x = self.fc2(x)
         x = x.squeeze(1) # Flatten to [batch_size]
         return x
-    
-    
+
+#-------------------Filter (HP)----------------------------------------
+def LPFilter(img):
+    weights2_m1 = np.array([[0.,0.,0.,0.,0.],
+                        [0.,-1.,2.,-1.,0.], 
+                        [0.,2.,-4.,2.,0],
+                        [0.,-1.,2.,-1.,0.], 
+                        [0.,0.,0.,0.,0.]])
+    weights2_m1=1/4*weights2_m1
+
+    weights2_m2 = np.array([[-1.,2.,-2.,2.,-1],
+                        [2.,-6.,8.,-6.,2.], 
+                        [-2.,8.,-12.,8.,-2.],
+                        [2.,-6.,8.,-6.,2.], 
+                        [-1.,2.,-2.,2.,-1],])
+    weights2_m2=1/12*weights2_m2
+
+    weights2_m3 = np.array([[0.,0.,0.,0.,0.],
+                        [0.,0.,0.,0.,0.],
+                        [0.,1.,-2.,1.,0],
+                        [0.,0.,0.,0.,0.],
+                        [0.,0.,0.,0.,0.]])
+    weights2_m3=1/2*weights2_m3
+    weights=np.dot(weights2_m1, weights2_m2, weights2_m3)
+    weights=torch.from_numpy(weights)
+    weights3=[weights,weights,weights]
+    weights3=torch.stack(weights3).float()
+    weights3=weights3.unsqueeze(dim=0)
+    filteredimgs = F.conv2d(img, weights3, padding=2)
+    return filteredimgs
+
+def HPFilter(img):
+    weights = torch.tensor([[[-1.,2.,-2.,2.,-1.],
+                       [2.,-6.,8.,-6.,2.],
+                       [-2.,8.,-12.,8.,-2.],
+                       [2.,-6.,8.,-6.,2.],
+                       [-1.,2.,-2.,2.,1.]], 
+                       [[-1.,2.,-2.,2.,-1.],
+                       [2.,-6.,8.,-6.,2.],
+                       [-2.,8.,-12.,8.,-2.],
+                       [2.,-6.,8.,-6.,2.],
+                       [-1.,2.,-2.,2.,1.]],
+                       [[-1.,2.,-2.,2.,-1.],
+                       [2.,-6.,8.,-6.,2.],
+                       [-2.,8.,-12.,8.,-2.],
+                       [2.,-6.,8.,-6.,2.],
+                       [-1.,2.,-2.,2.,1.]]])
+    weights=weights.unsqueeze(dim=0).cuda()
+    filteredimgs = F.conv2d(img, weights, padding=2).cuda()
+    return filteredimgs
+
+def HPFilter2(img):
+    weights = torch.tensor([[-1.,2.,-2.,2.,-1.],
+                       [2.,-6.,8.,-6.,2.],
+                       [-2.,8.,-12.,8.,-2.],
+                       [2.,-6.,8.,-6.,2.],
+                       [-1.,2.,-2.,2.,1.]])
+    filteredimgs=[]
+    for im in img:
+        im=np.transpose(im,[1,2,0])
+        im=im/2+0.5
+        im = im.squeeze()
+        result=ndimage.convolve(im, np.atleast_3d(weights))
+        result = torch.from_numpy(result)
+        result=np.transpose(result,[2,0,1])
+        filteredimgs.append(result)
+    filteredimgs = torch.stack(filteredimgs)
+    return filteredimgs.cuda()
+
 #-------------------Train Loop (Ft. Get Accuracy & Plotting)----------------------------------------
         
 
 
-def get_accuracy(model,set_, batch_size):
+def get_accuracy(mdl,set_, batch_size):
+    mdl.cuda()
     batch_size=16
     label_ = [0]*(batch_size*2)
     for i in range(batch_size,batch_size*2):
@@ -97,9 +164,10 @@ def get_accuracy(model,set_, batch_size):
                 
             b = torch.split(img,600,dim=3) 
             img = torch.cat(b, 0)
-
-            output = model(img).cuda()
-      
+            filteredimgs=HPFilter(img)
+            output= mdl(filteredimgs).cuda()
+        #    output = mdl(img).cuda()
+        
             pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
             correct += pred.eq(label.view_as(pred)).sum().item() #compute how many predictions were correct
             total += img.shape[0] #get the total ammount of predictions
@@ -136,15 +204,13 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
                 break
             img,batch=img.cuda(),batch.cuda()
             b = torch.split(img,600,dim=3) 
-            
-            
             img = torch.cat(b, 0)
             
          #   print(label)
             
             itera += batch_size*2
-            
-            out = mdl(img)
+            filteredimgs=HPFilter(img).cuda()
+            out = mdl(filteredimgs).cuda()
 
             loss = criterion(out, label)  
             loss.backward() 
@@ -155,11 +221,11 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
         # Calculate the statistics
         train_acc.append(get_accuracy(mdl,"train", batch_size))
         
-     #   val_acc.append(get_accuracy(mdl,"val"))  # compute validation accuracy
+        val_acc.append(get_accuracy(mdl,"val", batch_size))  # compute validation accuracy
         n += 1
 
         
-        print("Epoch",n,"Done in:",t.time() - t1, "With Training Accuracy:",train_acc[-1])#, "And Validation Accuracy:",val_acc[-1])
+        print("Epoch",n,"Done in:",t.time() - t1, "With Training Accuracy:",train_acc[-1], "And Validation Accuracy:",val_acc[-1])
 
 
         # Save the current model (checkpoint) to a file
@@ -170,7 +236,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.0001):
     
     print("--------------Finished--------------")
     
-    return iterations,train_acc #, val_acc
+    return iterations,train_acc , val_acc
 
 
 
@@ -185,5 +251,3 @@ def plot(iterations,train_acc, val_acc):
 
     print("Final Training Accuracy: {}".format(train_acc[-1]))
     print("Final Validation Accuracy: {}".format(val_acc[-1]))
-
-
