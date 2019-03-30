@@ -401,8 +401,8 @@ def grid_train(model,ep,lr,wd,dp,l,bs):
 
 learningRates = [0.001,0.0001,0.00005]
 weightDecay = [0,0.01,0.001,0.0001]
-dropouts = [0, 0.1, 0.3, 0.5]
-epochs = [10,30,50]
+dropouts = [0, 0.1, 0.2]
+epochs = [25]
 layers = [gd.ResNet4,gd.ResNet5,gd.ResNet6]
 batchSize = [16,32]
 
