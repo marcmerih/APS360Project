@@ -235,7 +235,7 @@ def plot(iterations,train_acc, val_acc):
     plt.xlabel("Epochs")
     plt.ylabel("Training Accuracy")
     plt.legend(loc='best')
-    plt.show()
+    plt.show();
 
     print("Final Training Accuracy: {}".format(train_acc[-1]))
     print("Final Validation Accuracy: {}".format(val_acc[-1]))
