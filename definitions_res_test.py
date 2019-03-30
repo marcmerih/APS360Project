@@ -213,7 +213,7 @@ def train(mdl,epochs= 20,batch_size = 32,learning_rate =0.001, weight_decay = 0.
         n += 1
 
 
-        print("Epoch",n,"Done in:",t.time() - t1, "With Training Accuracy:",train_acc[-1], "And Validation Accuracy:",val_acc[-1])
+        print(train_acc[-1], " ", val_acc[-1])
 
 
             # Save the current model (checkpoint) to a file
