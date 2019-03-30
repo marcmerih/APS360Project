@@ -24,6 +24,8 @@ import matplotlib.pyplot as plt
 import time as t
 import torch.optim as optim
 from PIL import Image, ImageOps
+import torchvision.models as tvm
+from a3code import AlexNetFeatures
 
 from resnet import * as
 

@@ -100,7 +100,20 @@ class ResNet(nn.Module):
         #print(x.size(),"\n\n\n")
         return x
 
+class ResNet5(nn.Module):
+    def __init__(self,dropout):
+        super(ResNet5, self).__init__()
+        self.name = "ResNet"
+        self.fc1 = nn.Linear(86528,400)
+        self.fc2 = nn.Linear(400,200)
+        self.fc3 = nn.Linear(200,90)
+        self.fc4 = nn.Linear(90, 32)
+        self.fc5 = nn.Linear(32, 2)
 
+        self.dropout1 = nn.Dropout(dropout)
+        self.dropout2 = nn.Dropout(dropout)
+        self.dropout3 = nn.Dropout(dropout)
+        self.dropout4 = nn.Dropout(dropout)
 
 
 #-------------------Train Loop (Ft. Get Accuracy & Plotting)----------------------------------------
@@ -387,9 +400,9 @@ def grid_train(model,ep,lr,wd,dp,l,bs):
 
 
 learningRates = [0.001,0.0001,0.00005]
-weightDecay = [0,0.01,0.001,0.0001]
-dropouts = [0, 0.1, 0.3, 0.5]
-epochs = [10,30,50]
+weightDecay = [0,0.01,0.001]
+dropouts = [0, 0.1, 0.2]
+epochs = [25]
 layers = [gd.ResNet4,gd.ResNet5,gd.ResNet6]
 batchSize = [16,32]
 
