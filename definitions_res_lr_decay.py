@@ -216,99 +216,6 @@ def resnet152(pretrained=False, **kwargs):
         model.load_state_dict(model_zoo.load_url(model_urls['resnet152']))
     return model
 
-class ResNet4(nn.Module):
-    def __init__(self,dropout):
-        super(ResNet4, self).__init__()
-        self.name = "ResNet"
-        self.fc1 = nn.Linear( 86528,300)
-        self.fc2 = nn.Linear( 300,100)
-        self.fc3 = nn.Linear( 100,32)
-        self.fc4 = nn.Linear(32, 2)
-
-        self.dropout1 = nn.Dropout(dropout)
-        self.dropout2 = nn.Dropout(dropout)
-        self.dropout3 = nn.Dropout(dropout)
-
-
-
-    def forward(self, x):
-        #print(x.size())
-        #x = x.view(-1, 86528)
-        #print(x.size())
-        x = F.relu(self.dropout1(self.fc1(x)))
-        #print(x.size())
-        x = F.relu(self.dropout2(self.fc2(x)))
-        x = F.relu(self.dropout3(self.fc3(x)))
-        x = self.fc4(x)
-        #x = x.squeeze(1)
-        #print(x.size(),"\n\n\n")
-        return x
-
-class ResNet5(nn.Module):
-    def __init__(self,dropout):
-        super(ResNet5, self).__init__()
-        self.name = "ResNet"
-        self.fc1 = nn.Linear(86528,400)
-        self.fc2 = nn.Linear(400,200)
-        self.fc3 = nn.Linear(200,90)
-        self.fc4 = nn.Linear(90, 32)
-        self.fc5 = nn.Linear(32, 2)
-
-        self.dropout1 = nn.Dropout(dropout)
-        self.dropout2 = nn.Dropout(dropout)
-        self.dropout3 = nn.Dropout(dropout)
-        self.dropout4 = nn.Dropout(dropout)
-
-
-
-    def forward(self, x):
-        #print(x.size())
-        #x = x.view(-1, 86528)
-        #print(x.size())
-        x = F.relu(self.dropout1(self.fc1(x)))
-        #print(x.size())
-        x = F.relu(self.dropout2(self.fc2(x)))
-        x = F.relu(self.dropout3(self.fc3(x)))
-        x = F.relu(self.dropout4(self.fc4(x)))
-        x = self.fc5(x)
-        #x = x.squeeze(1)
-        #print(x.size(),"\n\n\n")
-        return x
-
-class ResNet6(nn.Module):
-    def __init__(self):
-        super(ResNet6, self).__init__()
-        self.name = "ResNet"
-        self.fc1 = nn.Linear(86528,500)
-        self.fc2 = nn.Linear(500,200)
-        self.fc3 = nn.Linear(200,120)
-        self.fc4 = nn.Linear(120, 90)
-        self.fc5 = nn.Linear(90, 32)
-        self.fc6 = nn.Linear(32, 2)
-
-        self.dropout1 = nn.Dropout(dropout)
-        self.dropout2 = nn.Dropout(dropout)
-        self.dropout3 = nn.Dropout(dropout)
-        self.dropout4 = nn.Dropout(dropout)
-        self.dropout5 = nn.Dropout(dropout)
-
-
-
-    def forward(self, x):
-        #print(x.size())
-        #x = x.view(-1, 86528)
-        #print(x.size())
-        x = F.relu(self.dropout1(self.fc1(x)))
-        #print(x.size())
-        x = F.relu(self.dropout2(self.fc2(x)))
-        x = F.relu(self.dropout3(self.fc3(x)))
-        x = F.relu(self.dropout4(self.fc4(x)))
-        x = F.relu(self.dropout5(self.fc5(x)))
-        x = self.fc6(x)
-        #x = x.squeeze(1)
-        #print(x.size(),"\n\n\n")
-        return x
-
 
 # -*- coding: utf-8 -*-
 """
@@ -450,27 +357,6 @@ def resnet18(pretrained=False, **kwargs):
     return model
 
 resnet18 = resnet18(pretrained=True)
-
-
-#--------------------Data Loading and Splitting ---------------------------------
-def get_data_loader(batch_size):
-
-    train_path = r'trainData'
-    val_path = r'valData'
-    #test_path = r'testData'
-
-    transform = transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-
-    trainSet = torchvision.datasets.ImageFolder(root=train_path, transform=transform)
-    train_data_loader = torch.utils.data.DataLoader(trainSet, batch_size=batch_size, shuffle=True)
-
-    valSet = torchvision.datasets.ImageFolder(root=val_path, transform=transform)
-    val_data_loader = torch.utils.data.DataLoader(valSet, batch_size=batch_size, shuffle=True)
-
-    #testSet = torchvision.datasets.ImageFolder(root=test_path, transform=transform)
-    #test_data_loader  = torch.utils.data.DataLoader(testSet, batch_size=batch_size, shuffle=True)
-    return train_data_loader , val_data_loader #test_data_loader
-
 
 
 #--------------------Base Model----------------------------------------------------
@@ -723,34 +609,6 @@ def plot(iterations, train_acc, val_acc,learning_rate, weight_decay, factor, mdl
     print("Final Training Accuracy: {}".format(train_acc[-1]))
     print("Final Validation Accuracy: {}".format(val_acc[-1]))
 
-
-
-def RNFeatures(dataSet,type_):
-    data_ = dataSet
-    i = 0
-    j= 0
-
-    for img, label in data_:
-        b = torch.split(img,600,dim=3)
-
-        img = torch.cat(b, 0)
-        filteredimgs=LPFilterNP(img)
-        output = resnet18(filteredimgs)
-        if type_ == 'train':
-            tensor_path = "tensor_set{0}_number{1}".format(type_,i)
-
-            torch.save(output,r'C:/Users/itaza/APS360/Project/LPtrainData/'+tensor_path)
-            i+=1
-        elif type_ == 'val':
-            tensor_path = "tensor_set{0}_number{1}".format(type_,j)
-
-            torch.save(output,r'C:/Users/itaza/APS360/Project/LPvalData/'+tensor_path)
-            j+=1
-#LPtrainSet,LPvalSet = get_data_loader(1)
-#print("Train")
-#RNFeatures(LPtrainSet,'train')
-#print("Validation")
-#RNFeatures(LPvalSet,'val')
 def get_RN_data_loader(batch_size):
 
     train_path = r'RtrainData'
